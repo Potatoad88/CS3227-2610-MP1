@@ -32,9 +32,9 @@ The UI depends on the logic layer, while logic depends on model and storage. Mod
 
 ### Application and Views
 
-`WhatShouldIEatApp` creates one `PlaceManager`, the root `AppView`, and the JavaFX scene. `AppView` owns navigation and stores the theme preference using `java.util.prefs.Preferences`. Home, saved-list, and form views are recreated when navigating, so each page reflects the latest manager state.
+`WhatShouldIEatApp` creates one `PlaceManager`, the root `AppView`, and the JavaFX scene. `AppView` owns navigation and stores the theme preference using `java.util.prefs.Preferences`. Home, saved-list, details, and form views are recreated when navigating, so each page reflects the latest manager state.
 
-`SavedPlacesView` keeps pending filter controls separate from applied filter values. Search is applied when Enter is pressed; field filters are applied only through **Apply Filters**. Both the displayed list and its random picker use the same `FilterCriteria`, preventing filtered-out places from being selected.
+`SavedPlacesView` keeps pending filter controls separate from applied filter values. Name search is applied when Enter is pressed; field filters are applied only through **Apply Filters**. Both the displayed list and its random picker use the same `FilterCriteria`, preventing filtered-out places from being selected. Rows open `PlaceDetailsView` by mouse or keyboard, while their edit and delete controls keep independent actions.
 
 `PlaceFormView` is shared by add and edit flows. UI parsing handles required numeric distance input, while `PlaceManager` repeats domain validation so invalid data cannot bypass the form.
 
@@ -44,13 +44,13 @@ The UI depends on the logic layer, while logic depends on model and storage. Mod
 
 `PlaceManager` loads the in-memory list, returns places sorted case-insensitively by name, validates mutations, and persists CRUD operations. Names and cuisines must be non-blank, distance must be finite and non-negative, and rating must be from 1 to 5.
 
-`FilterCriteria` combines case-insensitive text search with exact cuisine, exact price, and maximum-distance checks. `RandomPicker` first filters the supplied list and returns `Optional.empty()` when no eligible place exists. Injecting `Random` through its second constructor makes selection deterministic in tests.
+`FilterCriteria` combines case-insensitive name search with exact cuisine, exact price, and maximum-distance checks. `RandomPicker` first filters the supplied list and returns `Optional.empty()` when no eligible place exists. Injecting `Random` through its second constructor makes selection deterministic in tests.
 
 ### Storage
 
 `JsonPlaceStorage` uses Java NIO to read and write `data/places.json`. It creates missing parent directories, escapes backslashes, quotation marks, and newlines, and regenerates a UUID when loading legacy data with a missing ID. Tags are stored as one comma-separated JSON string because commas are the form's tag delimiter.
 
-If the file is absent, storage returns three sample places. If it exists but is empty or contains `[]`, storage returns an empty list. The parser is deliberately limited to the schema written by this application; arbitrary JSON or manual schema changes are unsupported.
+If the file is absent, empty, or contains `[]`, storage returns an empty list. The parser is deliberately limited to the schema written by this application; arbitrary JSON or manual schema changes are unsupported.
 
 Example record:
 
@@ -87,11 +87,11 @@ The automated suite covers:
 
 - add, update, delete, ID preservation, and reload from disk;
 - domain validation boundaries;
-- combined text, cuisine, price, and distance filtering;
+- name-only search combined with cuisine, price, and distance filtering;
 - random selection restricted to eligible places and no-match behavior;
 - JSON round trips for IDs, tags, quotes, newlines, and backslashes.
 
-JavaFX layout and theme appearance remain manual-test concerns. The release should be checked at the minimum 960 x 640 window size and after an application restart.
+JavaFX layout and theme appearance remain manual-test concerns. The release should be checked at the minimum 720 x 480 window size and after an application restart.
 
 ## Software Engineering Process
 

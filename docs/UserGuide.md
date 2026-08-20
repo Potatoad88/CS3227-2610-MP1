@@ -10,7 +10,7 @@ What Should I Eat? is an offline Java desktop app for maintaining a personal lis
 - JDK 17 or newer
 - Internet access on the first build so Gradle can download JavaFX and test dependencies
 
-No global Gradle installation or Google Maps API key is required. The included `gradlew` script installs Gradle 8.10.2 inside the project folder when needed.
+No global Gradle installation is required. The included `gradlew` script installs Gradle 8.10.2 inside the project folder when needed.
 
 ## Setup and Launch
 
@@ -18,7 +18,7 @@ No global Gradle installation or Google Maps API key is required. The included `
 2. Ensure the launcher is executable: `chmod +x gradlew test.sh`.
 3. Start the app: `./gradlew run`.
 
-The first launch may take longer while dependencies are downloaded. The main window requires at least 960 x 640 pixels.
+The first launch may take longer while dependencies are downloaded. Smaller content areas scroll when needed.
 
 ## Testing the System
 
@@ -33,10 +33,12 @@ Run the automated tests from the project root:
 For a quick manual acceptance test:
 
 1. Add a place from **Saved Places** and confirm it appears in alphabetical order.
-2. Edit that place, return to the list, and confirm the changes appear.
-3. Apply a filter that includes only that place and press **Random**; the result must come from the visible filtered set.
-4. Restart the app and confirm the place and the selected light/dark theme are retained.
-5. Delete the place and confirm the deletion dialog before removal.
+2. Click its row and confirm the details page includes its personal notes, then return using **Back**.
+3. Search using part of its name, then try one of its tags and confirm only the name query matches.
+4. Edit that place, return to the list, and confirm the changes appear.
+5. Apply a filter that includes only that place and press **Random**; the result must come from the visible filtered set.
+6. Restart the app and confirm the place and the selected light/dark theme are retained.
+7. Delete the place and confirm the deletion dialog before removal.
 
 ## Home Page
 
@@ -44,11 +46,11 @@ The Home page shows a summary of the app and the current number of saved places.
 
 ## Saved Places
 
-Saved places are displayed alphabetically by name. Each row shows the place's cuisine, price range, distance, rating, and tags. Personal notes appear only in the add/edit form.
+Saved places are displayed alphabetically by name. Each row shows the place's cuisine, price range, distance, rating, and tags. Click a row, or focus it and press Enter, to open a read-only page containing all saved details, including personal notes. Use **Back** to return to the list or **Edit Place** to open the edit form.
 
 ### Search
 
-Enter text in **Search saved places** and press Enter to refresh the list. Search is case-insensitive and matches a place's name, cuisine, numeric distance, or tags. It does not search personal notes.
+Enter text in **Search saved places** and press Enter to refresh the list. Search is case-insensitive and matches restaurant names only. Cuisine, price, and distance can be narrowed using the separate filters.
 
 ### Filters
 
@@ -86,14 +88,14 @@ Press the moon/sun button at the right of the navigation bar to switch themes. T
 
 ## Saved Data
 
-Places are stored locally in `data/places.json`. If the file does not exist, the app displays three sample places. The file is created the next time a place is added, edited, or deleted. An existing file containing `[]` produces an empty list.
+Places are stored locally in `data/places.json`. If the file does not exist, the app starts with an empty saved-place list. The file is created the next time a place is added, edited, or deleted. An existing file containing `[]` also produces an empty list.
 
-To reset to the sample data, close the app and delete `data/places.json`. To start with no places, replace its contents with `[]`. Manual editing is not recommended because malformed JSON can prevent startup.
+To reset the saved-place list, close the app and delete `data/places.json` or replace its contents with `[]`. Manual editing is not recommended because malformed JSON can prevent startup.
 
 ## Limitations
 
 - Distance is entered manually; there is no geocoding, live location, route calculation, or Google Maps integration.
-- There are no place images, favourite flags, user accounts, cloud sync, or duplicate-name prevention.
+- There are no place images and user accounts.
 - The supplied launcher targets macOS and Linux shells; no Windows launcher is included.
 
 ## Troubleshooting
@@ -101,4 +103,4 @@ To reset to the sample data, close the app and delete `data/places.json`. To sta
 - `Permission denied: ./gradlew`: run `chmod +x gradlew`.
 - Java toolchain error: install JDK 17 or newer and ensure `java -version` works.
 - Dependency download error: reconnect to the Internet and rerun `./gradlew run`.
-- App fails after manual data edits: close the app and restore valid JSON, use `[]`, or delete `data/places.json` to restore samples.
+- App fails after manual data edits: close the app and restore valid JSON, use `[]`, or delete `data/places.json` to start empty again.
