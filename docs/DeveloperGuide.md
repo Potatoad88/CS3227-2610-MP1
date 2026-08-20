@@ -86,10 +86,11 @@ Useful commands from the project root are:
 The automated suite covers:
 
 - add, update, delete, ID preservation, and reload from disk;
-- domain validation boundaries;
+- domain validation, accepted boundary values, and unknown update IDs;
+- case-insensitive alphabetical sorting;
 - name-only search combined with cuisine, price, and distance filtering;
 - random selection restricted to eligible places and no-match behavior;
-- JSON round trips for IDs, tags, quotes, newlines, and backslashes.
+- JSON round trips for every stored field, including escaped special characters.
 
 JavaFX layout and theme appearance remain manual-test concerns. The release should be checked at the minimum 720 x 480 window size and after an application restart.
 

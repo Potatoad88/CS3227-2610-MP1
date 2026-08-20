@@ -23,6 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Integration tests for food-place model, logic, random selection, and JSON
+ * persistence using temporary files instead of production data.
+ */
 class PlaceManagerTest {
     @TempDir
     Path tempDir;
@@ -30,6 +34,7 @@ class PlaceManagerTest {
     private Path dataFile;
     private PlaceManager manager;
 
+    /** Creates an empty temporary data file and manager before each test. */
     @BeforeEach
     void setUp() throws IOException {
         dataFile = tempDir.resolve("places.json");
@@ -37,6 +42,7 @@ class PlaceManagerTest {
         manager = new PlaceManager(new JsonPlaceStorage(dataFile));
     }
 
+    /** Verifies that CRUD changes persist and updates preserve the place ID. */
     @Test
     void addUpdateDeleteArePersisted() throws IOException {
         FoodPlace place = place("Noodle House", "Chinese", 1.8, PriceRange.ONE, 4);
@@ -57,6 +63,7 @@ class PlaceManagerTest {
         assertTrue(new PlaceManager(new JsonPlaceStorage(dataFile)).getPlaces().isEmpty());
     }
 
+    /** Verifies that invalid required fields, distances, and ratings are rejected. */
     @Test
     void invalidPlaceDetailsAreRejected() {
         assertThrows(IllegalArgumentException.class,
@@ -69,8 +76,29 @@ class PlaceManagerTest {
                 () -> manager.add(place("Cafe", "Other", Double.NaN, PriceRange.ONE, 3)));
         assertThrows(IllegalArgumentException.class,
                 () -> manager.add(place("Cafe", "Other", 1, PriceRange.ONE, 0)));
+        assertThrows(IllegalArgumentException.class,
+                () -> manager.add(place("Cafe", "Other", 1, PriceRange.ONE, 6)));
     }
 
+    /** Verifies that valid minimum and maximum field values are accepted. */
+    @Test
+    void validBoundaryValuesAreAccepted() throws IOException {
+        manager.add(place("Minimum", "Other", 0, PriceRange.ONE, 1));
+        manager.add(place("Maximum Rating", "Other", 1, PriceRange.FOUR, 5));
+
+        assertEquals(2, manager.getPlaces().size());
+    }
+
+    /** Verifies that updating an unknown place ID fails clearly. */
+    @Test
+    void updateRejectsUnknownId() {
+        FoodPlace replacement = place("Replacement", "Other", 1, PriceRange.TWO, 3);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> manager.update("unknown-id", replacement));
+    }
+
+    /** Verifies that a missing storage file represents an empty saved list. */
     @Test
     void missingStorageFileStartsEmpty() throws IOException {
         Path missingFile = tempDir.resolve("missing-places.json");
@@ -80,6 +108,20 @@ class PlaceManagerTest {
         assertTrue(emptyManager.getPlaces().isEmpty());
     }
 
+    /** Verifies that places are returned alphabetically without regard to case. */
+    @Test
+    void placesAreSortedByNameIgnoringCase() throws IOException {
+        FoodPlace zebra = place("zebra Cafe", "Other", 1, PriceRange.ONE, 3);
+        FoodPlace apple = place("Apple Bistro", "Other", 1, PriceRange.ONE, 3);
+        FoodPlace banana = place("banana House", "Other", 1, PriceRange.ONE, 3);
+        manager.add(zebra);
+        manager.add(apple);
+        manager.add(banana);
+
+        assertEquals(List.of(apple, banana, zebra), manager.getPlaces());
+    }
+
+    /** Verifies name-only search and its combination with structured filters. */
     @Test
     void searchMatchesOnlyNameAndAppliesFieldFilters() throws IOException {
         FoodPlace near = new FoodPlace("Noodle House", "Chinese", 1.8,
@@ -100,6 +142,7 @@ class PlaceManagerTest {
         assertFalse(manager.search(new FilterCriteria("", "Any Cuisine", "$$$$", "")).contains(near));
     }
 
+    /** Verifies that random selection excludes every place failing the criteria. */
     @Test
     void randomPickerOnlyUsesMatchingPlaces() {
         FoodPlace included = place("Nearby", "Local", 1, PriceRange.ONE, 3);
@@ -113,8 +156,9 @@ class PlaceManagerTest {
         assertTrue(picker.pick(List.of(excluded), new FilterCriteria("nearby")).isEmpty());
     }
 
+    /** Verifies that every stored field and escaped character survives a round trip. */
     @Test
-    void storageRoundTripPreservesSpecialCharactersAndMissingIds() throws IOException {
+    void storageRoundTripPreservesAllFieldsAndSpecialCharacters() throws IOException {
         FoodPlace original = new FoodPlace(null, "Quote \" Cafe", "Other", 0,
                 PriceRange.TWO, 3, List.of("Tea", "Quiet"), "Line one\nLine two\\end");
         assertNotNull(original.getId());
@@ -125,6 +169,10 @@ class PlaceManagerTest {
 
         assertEquals(original.getId(), loaded.getId());
         assertEquals(original.getName(), loaded.getName());
+        assertEquals(original.getCuisine(), loaded.getCuisine());
+        assertEquals(original.getDistanceKm(), loaded.getDistanceKm());
+        assertEquals(original.getPriceRange(), loaded.getPriceRange());
+        assertEquals(original.getRating(), loaded.getRating());
         assertEquals(original.getTags(), loaded.getTags());
         assertEquals(original.getNotes(), loaded.getNotes());
     }
