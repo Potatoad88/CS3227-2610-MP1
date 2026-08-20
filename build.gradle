@@ -1,0 +1,35 @@
+plugins {
+    id "application"
+    id "org.openjfx.javafxplugin" version "0.1.0"
+}
+
+group = "com.whatshouldieat"
+version = "1.0.0"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+application {
+    mainClass = "com.whatshouldieat.ui.WhatShouldIEatApp"
+}
+
+javafx {
+    version = "21.0.4"
+    modules = ["javafx.controls"]
+}
+
+dependencies {
+    testImplementation platform("org.junit:junit-bom:5.11.4")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}

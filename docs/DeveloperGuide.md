@@ -1,0 +1,112 @@
+# Developer Guide
+
+## Product and Technology
+
+What Should I Eat? is an offline Java 17 desktop application built with JavaFX 21 and Gradle. Its release scope is CRUD for food places, text and field filtering, filtered random selection, JSON persistence, and a persistent light/dark theme. Google Maps integration is intentionally outside this release.
+
+## Architecture
+
+The code follows a small layered design:
+
+```text
+JavaFX views (ui)
+        |
+        v
+PlaceManager / FilterCriteria / RandomPicker (logic)
+        |
+        v
+FoodPlace / PriceRange (model)
+        |
+        v
+JsonPlaceStorage -> data/places.json (storage)
+```
+
+- `ui` builds JavaFX nodes, handles user events, and displays validation or I/O errors.
+- `logic` owns validation, sorted queries, CRUD coordination, filtering, and random selection.
+- `model` represents food-place data and price categories.
+- `storage` converts food places to and from the local JSON file.
+
+The UI depends on the logic layer, while logic depends on model and storage. Model classes do not depend on JavaFX, which allows core behavior to be tested without launching a window.
+
+## Main Components
+
+### Application and Views
+
+`WhatShouldIEatApp` creates one `PlaceManager`, the root `AppView`, and the JavaFX scene. `AppView` owns navigation and stores the theme preference using `java.util.prefs.Preferences`. Home, saved-list, and form views are recreated when navigating, so each page reflects the latest manager state.
+
+`SavedPlacesView` keeps pending filter controls separate from applied filter values. Search is applied when Enter is pressed; field filters are applied only through **Apply Filters**. Both the displayed list and its random picker use the same `FilterCriteria`, preventing filtered-out places from being selected.
+
+`PlaceFormView` is shared by add and edit flows. UI parsing handles required numeric distance input, while `PlaceManager` repeats domain validation so invalid data cannot bypass the form.
+
+### Domain and Logic
+
+`FoodPlace` stores `id`, `name`, `cuisine`, `distanceKm`, `priceRange`, `rating`, `tags`, and `notes`. IDs are UUID strings generated independently of names, allowing duplicate names while keeping updates unambiguous. `getTags()` returns a defensive copy, and `updateFrom()` preserves the existing ID.
+
+`PlaceManager` loads the in-memory list, returns places sorted case-insensitively by name, validates mutations, and persists CRUD operations. Names and cuisines must be non-blank, distance must be finite and non-negative, and rating must be from 1 to 5.
+
+`FilterCriteria` combines case-insensitive text search with exact cuisine, exact price, and maximum-distance checks. `RandomPicker` first filters the supplied list and returns `Optional.empty()` when no eligible place exists. Injecting `Random` through its second constructor makes selection deterministic in tests.
+
+### Storage
+
+`JsonPlaceStorage` uses Java NIO to read and write `data/places.json`. It creates missing parent directories, escapes backslashes, quotation marks, and newlines, and regenerates a UUID when loading legacy data with a missing ID. Tags are stored as one comma-separated JSON string because commas are the form's tag delimiter.
+
+If the file is absent, storage returns three sample places. If it exists but is empty or contains `[]`, storage returns an empty list. The parser is deliberately limited to the schema written by this application; arbitrary JSON or manual schema changes are unsupported.
+
+Example record:
+
+```json
+{
+  "id": "9f3c4fe0-d864-4fd6-835f-080d5ca3727b",
+  "name": "Pasta Bella",
+  "cuisine": "Italian",
+  "distanceKm": 2.4,
+  "priceRange": "$$",
+  "rating": 4,
+  "tags": "Cozy,Carbs",
+  "notes": "Reliable pasta and warm lighting."
+}
+```
+
+## Error Handling
+
+Form and filter validation errors are displayed in wrapping application dialogs. CRUD methods propagate `IOException` to the UI, where users receive an operation-specific error. An unreadable or malformed data file encountered during initial startup currently prevents launch; the User Guide documents how to recover the file.
+
+## Build and Test Process
+
+Useful commands from the project root are:
+
+```bash
+./gradlew run          # compile and launch the app
+./gradlew test         # run the JUnit 5 suite
+./gradlew clean build  # clean, compile, test, and package
+```
+
+`test.sh` delegates to `./gradlew test` so there is one test definition and one build lifecycle. Tests use JUnit's `@TempDir`; they never touch production data.
+
+The automated suite covers:
+
+- add, update, delete, ID preservation, and reload from disk;
+- domain validation boundaries;
+- combined text, cuisine, price, and distance filtering;
+- random selection restricted to eligible places and no-match behavior;
+- JSON round trips for IDs, tags, quotes, newlines, and backslashes.
+
+JavaFX layout and theme appearance remain manual-test concerns. The release should be checked at the minimum 960 x 640 window size and after an application restart.
+
+## Software Engineering Process
+
+Development was iterative and risk-driven. The first scope review deferred Google Maps because API keys, billing, network failures, and geocoding would add peer-testing risk without strengthening the core CRUD workflow. The implementation then separated UI from testable domain logic, followed by focused passes for validation, filtered random behavior, stable IDs, dark-mode persistence, accessibility labels, and documentation accuracy.
+
+AI output was treated as a draft rather than accepted blindly. Changes were checked through compilation, automated tests, manual launches, and screenshot comparison. Reported regressions, such as a null ID during update and low dark-mode contrast, were traced to shared model or CSS behavior before correction. Deferred Maps work remains documented instead of being represented by unused interfaces or placeholder code.
+
+## Future Extension: Maps
+
+A future release may introduce a location service only when Maps is implemented. That service should translate an address into coordinates and calculate distance from user-defined presets such as Home or Work. API keys must remain outside source control, and manual distance should remain available when the network or API is unavailable.
+
+## Acknowledgements
+
+- The visual direction was adapted from three prototype screenshots supplied by the project author. No image assets or source code were copied from them.
+- Product planning, implementation drafts, reviews, debugging, Javadocs, tests, and documentation were developed with OpenAI ChatGPT and Codex. All generated output was reviewed and adapted for this project.
+- Code-simplification reviews used Dietrich Gebert's Ponytail Codex plugin. Its guidance influenced removal of unused favourite-related behavior and speculative abstractions; no Ponytail source code is included in the app.
+- The project uses [OpenJFX](https://openjfx.io/) for its desktop UI, [Gradle](https://gradle.org/) for builds, and [JUnit 5](https://junit.org/junit5/) for automated tests.
+- JavaFX and Unicode symbols provide the interface icons. No third-party icon artwork is bundled.
