@@ -287,11 +287,28 @@
     -fx-border-radius: 18;
     -fx-padding: 16 18;
     -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.07), 16, 0.08, 0, 4);
+    -fx-cursor: hand;
 }
 
-.place-row:hover {
+.place-row:hover, .place-row:focused {
     -fx-background-color: linear-gradient(to right, #ffffff, #f1f7ff);
     -fx-border-color: #b9d2f5;
+}
+
+.details-card {
+    -fx-spacing: 20;
+}
+
+.detail-value {
+    -fx-background-color: #eef3f8;
+    -fx-border-color: #d5e0ea;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-padding: 13 14;
+    -fx-min-height: 46;
+    -fx-text-fill: #111827;
+    -fx-font-size: 14px;
 }
 
 .cuisine-icon {
@@ -568,6 +585,11 @@
     -fx-border-color: #526783;
 }
 
+.dark .place-row:focused {
+    -fx-background-color: #273449;
+    -fx-border-color: #60a5fa;
+}
+
 .dark .saved-search,
 .dark .filter-toggle,
 .dark .filter-distance,
@@ -578,6 +600,12 @@
 .dark .field-control,
 .dark .text-area.field-control .content,
 .dark .star-row {
+    -fx-background-color: #2a3749;
+    -fx-border-color: #46566c;
+    -fx-text-fill: #f8fafc;
+}
+
+.dark .detail-value {
     -fx-background-color: #2a3749;
     -fx-border-color: #46566c;
     -fx-text-fill: #f8fafc;

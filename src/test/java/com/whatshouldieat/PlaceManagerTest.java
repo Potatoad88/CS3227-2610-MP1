@@ -81,7 +81,7 @@ class PlaceManagerTest {
     }
 
     @Test
-    void searchAppliesTextAndFieldFiltersTogether() throws IOException {
+    void searchMatchesOnlyNameAndAppliesFieldFilters() throws IOException {
         FoodPlace near = new FoodPlace("Noodle House", "Chinese", 1.8,
                 PriceRange.ONE, 4, List.of("Soup", "Quick"), "Order dry noodles.");
         FoodPlace far = new FoodPlace("Fine Dining", "Western", 8,
@@ -89,10 +89,14 @@ class PlaceManagerTest {
         manager.add(near);
         manager.add(far);
 
-        List<FoodPlace> matches = manager.search(new FilterCriteria("soup", "Chinese", "$", "2"));
+        List<FoodPlace> matches = manager.search(new FilterCriteria("noodle", "Chinese", "$", "2"));
 
         assertEquals(List.of(near), matches);
         assertTrue(manager.search(new FilterCriteria("NOODLE")).contains(near));
+        assertTrue(manager.search(new FilterCriteria("house")).contains(near));
+        assertFalse(manager.search(new FilterCriteria("soup")).contains(near));
+        assertFalse(manager.search(new FilterCriteria("Chinese")).contains(near));
+        assertFalse(manager.search(new FilterCriteria("1.8")).contains(near));
         assertFalse(manager.search(new FilterCriteria("", "Any Cuisine", "$$$$", "")).contains(near));
     }
 

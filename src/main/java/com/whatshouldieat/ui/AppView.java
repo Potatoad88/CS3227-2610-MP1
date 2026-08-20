@@ -10,7 +10,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 
 import java.util.prefs.Preferences;
 
@@ -69,6 +68,15 @@ public class AppView {
      */
     public void showEditPlace(FoodPlace place) {
         root.setCenter(new PlaceFormView(manager, this, place).getRoot());
+    }
+
+    /**
+     * Displays the read-only details of an existing food place.
+     *
+     * @param place place to display
+     */
+    public void showPlaceDetails(FoodPlace place) {
+        root.setCenter(new PlaceDetailsView(this, place).getRoot());
     }
 
     private HBox createNav() {

@@ -7,6 +7,7 @@ import com.whatshouldieat.model.FoodPlace;
 import javafx.css.PseudoClass;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.AccessibleRole;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -15,6 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -221,6 +224,15 @@ class SavedPlacesView {
     private BorderPane rowFor(FoodPlace place) {
         BorderPane row = new BorderPane();
         row.getStyleClass().add("place-row");
+        row.setFocusTraversable(true);
+        row.setAccessibleRole(AccessibleRole.BUTTON);
+        row.setAccessibleText("View details for " + place.getName());
+        row.setOnMouseClicked(event -> app.showPlaceDetails(place));
+        row.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                app.showPlaceDetails(place);
+            }
+        });
 
         Label icon = new Label(iconFor(place.getCuisine()));
         icon.getStyleClass().add("cuisine-icon");
@@ -247,6 +259,8 @@ class SavedPlacesView {
         Button edit = iconButton("✎", "Edit " + place.getName());
         Button delete = iconButton("×", "Delete " + place.getName());
         delete.getStyleClass().add("danger-icon-button");
+        edit.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseEvent::consume);
+        delete.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseEvent::consume);
         edit.setOnAction(event -> app.showEditPlace(place));
         delete.setOnAction(event -> delete(place));
         HBox actions = new HBox(7, edit, delete);

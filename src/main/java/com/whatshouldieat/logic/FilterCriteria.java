@@ -5,7 +5,7 @@ import com.whatshouldieat.model.FoodPlace;
 import java.util.Locale;
 
 /**
- * Describes the text, cuisine, price, and distance filters applied to places.
+ * Describes the name, cuisine, price, and distance filters applied to places.
  * Blank values and values beginning with {@code Any} do not restrict results.
  */
 public class FilterCriteria {
@@ -40,8 +40,7 @@ public class FilterCriteria {
 
     /**
      * Tests whether a food place satisfies every active criterion.
-     * Text searches match the name, cuisine, distance, or tags without regard
-     * to letter case.
+     * Text searches match only the place name, without regard to letter case.
      *
      * @param place place to test
      * @return {@code true} when the place matches all active filters
@@ -59,8 +58,7 @@ public class FilterCriteria {
         if (query.isEmpty()) {
             return true;
         }
-        return contains(place.getName()) || contains(place.getCuisine())
-                || contains(String.valueOf(place.getDistanceKm())) || place.getTags().stream().anyMatch(this::contains);
+        return contains(place.getName());
     }
 
     private boolean contains(String value) {
