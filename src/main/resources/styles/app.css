@@ -141,7 +141,6 @@
 
 .saved-page {
     -fx-background-color: linear-gradient(to bottom, #f7faff, #f7f8fb);
-    -fx-min-height: 640;
 }
 
 .page-title {

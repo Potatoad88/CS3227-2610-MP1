@@ -30,8 +30,8 @@ public class WhatShouldIEatApp extends Application {
         Scene scene = new Scene(appView.getRoot(), 1120, 720);
         scene.getStylesheets().add(getClass().getResource("/styles/app.css").toExternalForm());
         stage.setTitle("What Should I Eat?");
-        stage.setMinWidth(960);
-        stage.setMinHeight(640);
+        stage.setMinWidth(720);
+        stage.setMinHeight(480);
         stage.setScene(scene);
         stage.show();
     }
