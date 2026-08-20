@@ -32,6 +32,8 @@
 .theme-toggle {
     -fx-background-color: #eef3f8;
     -fx-background-radius: 12;
+    -fx-border-color: transparent;
+    -fx-border-radius: 12;
     -fx-font-size: 18px;
     -fx-padding: 5;
     -fx-min-width: 38;
@@ -39,6 +41,10 @@
     -fx-max-width: 38;
     -fx-max-height: 38;
     -fx-cursor: hand;
+}
+
+.theme-toggle:focused {
+    -fx-border-color: #93b4ff;
 }
 
 .home-page {
