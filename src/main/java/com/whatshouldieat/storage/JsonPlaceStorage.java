@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,9 +16,7 @@ import java.util.stream.Collectors;
 /**
  * Loads and saves food places in a local JSON file.
  *
- * <p>If the storage file does not exist, {@link #load()} returns the
- * application's initial sample places. An existing empty file represents an
- * empty saved-place list.</p>
+ * <p>A missing or empty storage file represents an empty saved-place list.</p>
  */
 public class JsonPlaceStorage {
     private final Path file;
@@ -36,13 +33,13 @@ public class JsonPlaceStorage {
     /**
      * Loads all food places from the storage file.
      *
-     * @return food places loaded from storage, or sample places if the file
+     * @return food places loaded from storage, or an empty list if the file
      *         does not exist
      * @throws IOException if the storage file cannot be read
      */
     public List<FoodPlace> load() throws IOException {
         if (!Files.exists(file)) {
-            return seedPlaces();
+            return new ArrayList<>();
         }
         String content = Files.readString(file).trim();
         if (content.isEmpty() || content.equals("[]")) {
@@ -111,7 +108,7 @@ public class JsonPlaceStorage {
     private List<String> splitObjects(String content) {
         String trimmed = content.substring(1, content.length() - 1).trim();
         if (trimmed.isEmpty()) {
-            return Collections.emptyList();
+            return List.of();
         }
         List<String> objects = new ArrayList<>();
         int depth = 0;
@@ -195,14 +192,4 @@ public class JsonPlaceStorage {
         return Double.parseDouble(values.getOrDefault("distanceKm", "0"));
     }
 
-    private List<FoodPlace> seedPlaces() {
-        List<FoodPlace> seed = new ArrayList<>();
-        seed.add(new FoodPlace("O-Ku Sushi", "Japanese", 4.8,
-                PriceRange.THREE, 5, List.of("Date Night", "Omakase"), "Good for slow dinners."));
-        seed.add(new FoodPlace("Pasta Bella", "Italian", 2.4,
-                PriceRange.TWO, 4, List.of("Cozy", "Carbs"), "Reliable pasta and warm lighting."));
-        seed.add(new FoodPlace("El Super Taco", "Mexican", 6.1,
-                PriceRange.ONE, 5, List.of("Quick Bite", "Spicy"), "Best when craving something loud."));
-        return seed;
-    }
 }

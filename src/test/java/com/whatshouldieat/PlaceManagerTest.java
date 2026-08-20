@@ -72,6 +72,15 @@ class PlaceManagerTest {
     }
 
     @Test
+    void missingStorageFileStartsEmpty() throws IOException {
+        Path missingFile = tempDir.resolve("missing-places.json");
+
+        PlaceManager emptyManager = new PlaceManager(new JsonPlaceStorage(missingFile));
+
+        assertTrue(emptyManager.getPlaces().isEmpty());
+    }
+
+    @Test
     void searchAppliesTextAndFieldFiltersTogether() throws IOException {
         FoodPlace near = new FoodPlace("Noodle House", "Chinese", 1.8,
                 PriceRange.ONE, 4, List.of("Soup", "Quick"), "Order dry noodles.");
