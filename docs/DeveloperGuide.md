@@ -34,7 +34,7 @@ The UI depends on the logic layer, while logic depends on model and storage. Mod
 
 `WhatShouldIEatApp` creates one `PlaceManager`, the root `AppView`, and the JavaFX scene. `AppView` owns navigation and stores the theme preference using `java.util.prefs.Preferences`. Home, saved-list, details, and form views are recreated when navigating, so each page reflects the latest manager state.
 
-`SavedPlacesView` keeps pending filter controls separate from applied filter values. Name search is applied when Enter is pressed; field filters are applied only through **Apply Filters**. Both the displayed list and its random picker use the same `FilterCriteria`, preventing filtered-out places from being selected. Rows open `PlaceDetailsView` by mouse or keyboard, while their edit and delete controls keep independent actions.
+`SavedPlacesView` keeps typed search text and pending filter controls separate from their applied values. Name search is submitted with Enter or the search button, while clearing the field removes the applied query immediately. Field filters are applied only through **Apply Filters**. Both the displayed list and its random picker use the same `FilterCriteria`, preventing filtered-out places from being selected. Rows open `PlaceDetailsView` by mouse or keyboard, while their edit and delete controls keep independent actions.
 
 `PlaceFormView` is shared by add and edit flows. UI parsing handles required numeric distance input, while `PlaceManager` repeats domain validation so invalid data cannot bypass the form.
 

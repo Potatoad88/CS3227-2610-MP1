@@ -34,11 +34,11 @@ For a quick manual acceptance test:
 
 1. Add a place from **Saved Places** and confirm it appears in alphabetical order.
 2. Click its row and confirm the details page includes its personal notes, then return using **Back**.
-3. Search using part of its name, then try one of its tags and confirm only the name query matches.
+3. Search using part of its name with the search button, then clear the field and confirm all results return immediately.
 4. Edit that place, return to the list, and confirm the changes appear.
 5. Apply a filter that includes only that place and press **Random**; the result must come from the visible filtered set.
-6. Restart the app and confirm the place and the selected light/dark theme are retained.
-7. Delete the place and confirm the deletion dialog before removal.
+6. Delete the place and confirm the deletion dialog before removal.
+7. Restart the app and confirm the place and the selected light/dark theme are retained.
 
 ## Home Page
 
@@ -50,7 +50,7 @@ Saved places are displayed alphabetically by name. Each row shows the place's cu
 
 ### Search
 
-Enter text in **Search saved places** and press Enter to refresh the list. Search is case-insensitive and matches restaurant names only. Cuisine, price, and distance can be narrowed using the separate filters.
+Enter text in **Search saved places**, then press Enter or the search-icon button to refresh the list. Search is case-insensitive and matches restaurant names only. Text that has not been submitted does not affect the displayed list or random picker. Clearing the field immediately restores all places allowed by the applied cuisine, price, and distance filters.
 
 ### Filters
 
@@ -58,7 +58,7 @@ Enter text in **Search saved places** and press Enter to refresh the list. Searc
 2. Select an exact cuisine, an exact price range, and/or enter a maximum distance in kilometres.
 3. Press **Apply Filters**.
 
-All active filters and the current search text are combined. Maximum distance must be blank or a finite number greater than or equal to zero. The number beside **Filter** reports how many field filters are active. **Clear** removes all field filters but does not clear the search box.
+All active filters and the submitted search text are combined. Maximum distance must be blank or a finite number greater than or equal to zero. The number beside **Filter** reports how many field filters are active. **Clear** removes all field filters but does not clear the search box.
 
 ### Random Selection
 

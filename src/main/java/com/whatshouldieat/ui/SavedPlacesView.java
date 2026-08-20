@@ -49,6 +49,7 @@ class SavedPlacesView {
     private String appliedCuisine = "Any Cuisine";
     private String appliedPrice = "Any Price";
     private String appliedDistance = "";
+    private String appliedQuery = "";
 
     SavedPlacesView(PlaceManager manager, AppView app) {
         this.manager = manager;
@@ -81,7 +82,20 @@ class SavedPlacesView {
     private FlowPane buildToolbar() {
         search.setPromptText("Search saved places");
         search.getStyleClass().add("saved-search");
-        search.setOnAction(event -> refresh());
+        search.setOnAction(event -> applySearch());
+        search.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isBlank() && !appliedQuery.isEmpty()) {
+                appliedQuery = "";
+                refresh();
+            }
+        });
+        Button searchButton = new Button("⌕");
+        searchButton.getStyleClass().add("search-button");
+        searchButton.setTooltip(new Tooltip("Search saved places"));
+        searchButton.setAccessibleText("Search saved places");
+        searchButton.setOnAction(event -> applySearch());
+        HBox searchControl = new HBox(search, searchButton);
+        searchControl.getStyleClass().add("search-control");
 
         Button random = new Button("↯  Random");
         random.getStyleClass().add("secondary-button");
@@ -95,9 +109,14 @@ class SavedPlacesView {
         add.getStyleClass().add("primary-button");
         add.setOnAction(event -> app.showAddPlace());
 
-        FlowPane toolbar = new FlowPane(10, 10, search, random, filterButton, add);
+        FlowPane toolbar = new FlowPane(10, 10, searchControl, random, filterButton, add);
         toolbar.getStyleClass().add("saved-toolbar");
         return toolbar;
+    }
+
+    private void applySearch() {
+        appliedQuery = search.getText().trim();
+        refresh();
     }
 
     private void configureFilterPanel() {
@@ -338,6 +357,6 @@ class SavedPlacesView {
     }
 
     private FilterCriteria criteria() {
-        return new FilterCriteria(search.getText(), appliedCuisine, appliedPrice, appliedDistance);
+        return new FilterCriteria(appliedQuery, appliedCuisine, appliedPrice, appliedDistance);
     }
 }
