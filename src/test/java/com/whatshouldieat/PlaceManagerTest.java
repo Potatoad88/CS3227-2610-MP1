@@ -160,7 +160,7 @@ class PlaceManagerTest {
     @Test
     void storageRoundTripPreservesAllFieldsAndSpecialCharacters() throws IOException {
         FoodPlace original = new FoodPlace(null, "Quote \" Cafe", "Other", 0,
-                PriceRange.TWO, 3, List.of("Tea", "Quiet"), "Line one\nLine two\\end");
+                PriceRange.TWO, 3, List.of("Tea", "Quiet"), "Line one\nLine two\\nTab\there\rEnd");
         assertNotNull(original.getId());
 
         JsonPlaceStorage storage = new JsonPlaceStorage(dataFile);

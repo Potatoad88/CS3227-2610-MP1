@@ -98,11 +98,35 @@ public class JsonPlaceStorage {
     }
 
     private String escape(String value) {
-        return value == null ? "" : value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n");
+        return value == null ? "" : value.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 
     private String unescape(String value) {
-        return value.replace("\\n", "\n").replace("\\\"", "\"").replace("\\\\", "\\");
+        StringBuilder result = new StringBuilder();
+        boolean escaped = false;
+        for (char character : value.toCharArray()) {
+            if (escaped) {
+                result.append(switch (character) {
+                case 'n' -> '\n';
+                case 'r' -> '\r';
+                case 't' -> '\t';
+                default -> character;
+                });
+                escaped = false;
+            } else if (character == '\\') {
+                escaped = true;
+            } else {
+                result.append(character);
+            }
+        }
+        if (escaped) {
+            result.append('\\');
+        }
+        return result.toString();
     }
 
     private List<String> splitObjects(String content) {

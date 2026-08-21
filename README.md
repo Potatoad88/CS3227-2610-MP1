@@ -2,18 +2,42 @@
 
 A Java desktop app for saving food places and randomly choosing where to eat.
 
+## Requirements
+
+- Windows, macOS, or Linux
+- A 64-bit JDK 17 or newer
+- Internet access for the first build
+
+Gradle does not need to be installed separately.
+
 ## Run
+
+On Windows:
+
+```bat
+gradlew.bat run
+```
+
+On macOS or Linux:
 
 ```bash
 ./gradlew run
 ```
 
-The app uses JavaFX through Gradle. The included `./gradlew` script downloads a local Gradle copy on first run, so you do not need to install Gradle globally.
+The Gradle wrapper downloads Gradle and the JavaFX dependencies when needed.
 
 ## Test
 
-```bash
-./test.sh
+On Windows:
+
+```bat
+gradlew.bat test
 ```
 
-Saved data is written to `data/places.json` when the app runs.
+On macOS or Linux:
+
+```bash
+./gradlew test
+```
+
+See [the User Guide](docs/UserGuide.md) for all features, setup details, and troubleshooting. Saved data is written to `data/places.json` when the app runs.
