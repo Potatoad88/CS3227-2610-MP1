@@ -94,6 +94,14 @@ The automated suite covers:
 
 JavaFX layout and theme appearance remain manual-test concerns. The release should be checked at the minimum 720 x 480 window size and after an application restart.
 
+## Continuous Integration and Dependency Updates
+
+GitHub Actions runs the **Tests** workflow on every push to `master` and on pull requests targeting `master`. It uses Ubuntu with Temurin Java 17 and runs `./gradlew --no-daemon test`.
+
+The separate **CodeQL** workflow runs on the same events and once a week. It analyses the Java source with read-only repository access plus permission to publish security results. Keeping the workflows separate makes test failures and security-analysis results easy to distinguish.
+
+Dependabot checks Gradle and GitHub Actions dependencies every Monday at 09:00 Asia/Singapore. It opens at most three update pull requests per ecosystem and never merges them automatically. Each update should be reviewed and pass both workflows before it is merged.
+
 ## Software Engineering Process
 
 Development was iterative and risk-driven. The first scope review deferred Google Maps because API keys, billing, network failures, and geocoding would add peer-testing risk without strengthening the core CRUD workflow. The implementation then separated UI from testable domain logic, followed by focused passes for validation, filtered random behavior, stable IDs, dark-mode persistence, accessibility labels, and documentation accuracy.
@@ -110,4 +118,5 @@ A future release may introduce a location service only when Maps is implemented.
 - Product planning, implementation drafts, reviews, debugging, Javadocs, tests, and documentation were developed with OpenAI ChatGPT and Codex. All generated output was reviewed and adapted for this project.
 - Code-simplification reviews used Dietrich Gebert's Ponytail Codex plugin. Its guidance influenced removal of unused favourite-related behavior and speculative abstractions; no Ponytail source code is included in the app.
 - The project uses [OpenJFX](https://openjfx.io/) for its desktop UI, [Gradle](https://gradle.org/) for builds, and [JUnit 5](https://junit.org/junit5/) for automated tests.
+- Repository automation uses [GitHub Actions](https://github.com/features/actions), [CodeQL](https://codeql.github.com/), and [Dependabot](https://docs.github.com/en/code-security/dependabot).
 - JavaFX and Unicode symbols provide the interface icons. No third-party icon artwork is bundled.
