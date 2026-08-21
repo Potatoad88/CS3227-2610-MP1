@@ -11,7 +11,15 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            gradle: ./gradlew
+          - os: windows-latest
+            gradle: .\gradlew.bat
+
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 10
 
     steps:
@@ -25,4 +33,4 @@ jobs:
           java-version: "17"
 
       - name: Run tests
-        run: ./gradlew --no-daemon test
+        run: ${{ matrix.gradle }} --no-daemon test

@@ -73,7 +73,7 @@ Form and filter validation errors are displayed in wrapping application dialogs.
 
 ## Build and Test Process
 
-Useful commands from the project root are:
+The official Gradle wrapper downloads Gradle 8.10.2 and resolves the JavaFX native libraries for the current operating system. Useful macOS/Linux commands from the project root are:
 
 ```bash
 ./gradlew run          # compile and launch the app
@@ -81,7 +81,7 @@ Useful commands from the project root are:
 ./gradlew clean build  # clean, compile, test, and package
 ```
 
-`test.sh` delegates to `./gradlew test` so there is one test definition and one build lifecycle. Tests use JUnit's `@TempDir`; they never touch production data.
+Windows uses the equivalent commands `gradlew.bat run`, `gradlew.bat test`, and `gradlew.bat clean build`. The optional `test.sh` delegates to `./gradlew test` on macOS/Linux so there is one test definition and one build lifecycle. Tests use JUnit's `@TempDir`; they never touch production data.
 
 The automated suite covers:
 
@@ -96,7 +96,7 @@ JavaFX layout and theme appearance remain manual-test concerns. The release shou
 
 ## Continuous Integration and Dependency Updates
 
-GitHub Actions runs the **Tests** workflow on every push to `master` and on pull requests targeting `master`. It uses Ubuntu with Temurin Java 17 and runs `./gradlew --no-daemon test`.
+GitHub Actions runs the **Tests** workflow on every push to `master` and on pull requests targeting `master`. It uses Temurin Java 17 and runs the suite separately on Ubuntu and Windows with each platform's native Gradle wrapper launcher.
 
 The separate **CodeQL** workflow runs on the same events and once a week. It analyses the Java source with read-only repository access plus permission to publish security results. Keeping the workflows separate makes test failures and security-analysis results easy to distinguish.
 

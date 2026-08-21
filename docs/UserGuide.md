@@ -6,29 +6,35 @@ What Should I Eat? is an offline Java desktop app for maintaining a personal lis
 
 ## Requirements
 
-- macOS or Linux with a terminal
-- JDK 17 or newer
+- Windows, macOS, or Linux with a terminal
+- A 64-bit JDK 17 or newer
 - Internet access on the first build so Gradle can download JavaFX and test dependencies
 
-No global Gradle installation is required. The included `gradlew` script installs Gradle 8.10.2 inside the project folder when needed.
+No global Gradle installation is required. The included Gradle wrapper downloads and uses Gradle 8.10.2 when needed.
 
 ## Setup and Launch
 
 1. Open a terminal in the project root, the folder containing `build.gradle`.
-2. Ensure the launcher is executable: `chmod +x gradlew test.sh`.
-3. Start the app: `./gradlew run`.
+2. On Windows, start the app with `gradlew.bat run`.
+3. On macOS or Linux, ensure the launcher is executable with `chmod +x gradlew test.sh`, then start the app with `./gradlew run`.
 
 The first launch may take longer while dependencies are downloaded. Smaller content areas scroll when needed.
 
 ## Testing the System
 
-Run the automated tests from the project root:
+Run the automated tests from the project root on Windows:
+
+```bat
+gradlew.bat test
+```
+
+On macOS or Linux, run:
 
 ```bash
 ./gradlew test
 ```
 
-`./test.sh` runs the same Gradle test task. A successful run ends with `BUILD SUCCESSFUL`. The tests use temporary files and do not change `data/places.json`.
+The optional macOS/Linux command `./test.sh` runs the same Gradle test task. A successful run ends with `BUILD SUCCESSFUL`. The tests use temporary files and do not change `data/places.json`.
 
 For a quick manual acceptance test:
 
@@ -96,11 +102,12 @@ To reset the saved-place list, close the app and delete `data/places.json` or re
 
 - Distance is entered manually; there is no geocoding, live location, route calculation, or Google Maps integration.
 - There are no place images and user accounts.
-- The supplied launcher targets macOS and Linux shells; no Windows launcher is included.
+- No native installer or bundled JDK is provided; the app is launched from the project folder using the Gradle wrapper.
 
 ## Troubleshooting
 
 - `Permission denied: ./gradlew`: run `chmod +x gradlew`.
+- `'java' is not recognized` on Windows: install a 64-bit JDK 17 or newer, then reopen the terminal and run `java -version`.
 - Java toolchain error: install JDK 17 or newer and ensure `java -version` works.
-- Dependency download error: reconnect to the Internet and rerun `./gradlew run`.
+- Dependency download error: reconnect to the Internet and rerun the launch command for your operating system.
 - App fails after manual data edits: close the app and restore valid JSON, use `[]`, or delete `data/places.json` to start empty again.
