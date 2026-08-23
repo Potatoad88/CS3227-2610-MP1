@@ -67,8 +67,10 @@ public class PlaceManager {
      */
     public void add(FoodPlace place) throws IOException {
         validate(place);
+        List<FoodPlace> updated = new ArrayList<>(places);
+        updated.add(place);
+        storage.save(updated);
         places.add(place);
-        save();
     }
 
     /**
@@ -85,8 +87,13 @@ public class PlaceManager {
         validate(replacement);
         FoodPlace existing = findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Place not found."));
+        FoodPlace persisted = new FoodPlace(existing.getId(), replacement.getName(), replacement.getCuisine(),
+                replacement.getDistanceKm(), replacement.getPriceRange(), replacement.getRating(),
+                replacement.getTags(), replacement.getNotes());
+        List<FoodPlace> updated = new ArrayList<>(places);
+        updated.set(places.indexOf(existing), persisted);
+        storage.save(updated);
         existing.updateFrom(replacement);
-        save();
     }
 
     /**
@@ -96,8 +103,11 @@ public class PlaceManager {
      * @throws IOException if the updated list cannot be saved
      */
     public void delete(String id) throws IOException {
+        List<FoodPlace> updated = places.stream()
+                .filter(place -> !place.getId().equals(id))
+                .toList();
+        storage.save(updated);
         places.removeIf(place -> place.getId().equals(id));
-        save();
     }
 
     private void validate(FoodPlace place) {
@@ -113,9 +123,5 @@ public class PlaceManager {
         if (place.getRating() < 1 || place.getRating() > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5.");
         }
-    }
-
-    private void save() throws IOException {
-        storage.save(places);
     }
 }

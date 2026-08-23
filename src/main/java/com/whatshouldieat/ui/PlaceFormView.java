@@ -157,6 +157,7 @@ class PlaceFormView {
             final int ratingValue = i;
             Button star = new Button();
             star.getStyleClass().add("star-button");
+            star.setAccessibleText("Set rating to " + ratingValue + " out of 5");
             star.setOnAction(event -> {
                 selectedRating = ratingValue;
                 updateStars();

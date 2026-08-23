@@ -85,7 +85,7 @@ Windows uses the equivalent commands `gradlew.bat run`, `gradlew.bat test`, and 
 
 The automated suite covers:
 
-- add, update, delete, ID preservation, and reload from disk;
+- add, update, delete, ID preservation, reload from disk, and unchanged state after failed writes;
 - domain validation, accepted boundary values, and unknown update IDs;
 - case-insensitive alphabetical sorting;
 - name-only search combined with cuisine, price, and distance filtering;

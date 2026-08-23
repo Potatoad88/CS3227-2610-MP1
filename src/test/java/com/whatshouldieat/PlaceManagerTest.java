@@ -63,6 +63,27 @@ class PlaceManagerTest {
         assertTrue(new PlaceManager(new JsonPlaceStorage(dataFile)).getPlaces().isEmpty());
     }
 
+    /** Verifies that failed disk writes leave the managed list unchanged. */
+    @Test
+    void failedWritesDoNotChangeManagedPlaces() throws IOException {
+        FoodPlace original = place("Original", "Other", 1, PriceRange.ONE, 3);
+        manager.add(original);
+        PlaceManager failingManager = new PlaceManager(new JsonPlaceStorage(dataFile) {
+            @Override
+            public void save(List<FoodPlace> places) throws IOException {
+                throw new IOException("Disk unavailable.");
+            }
+        });
+
+        assertThrows(IOException.class,
+                () -> failingManager.add(place("New", "Other", 1, PriceRange.ONE, 3)));
+        assertThrows(IOException.class,
+                () -> failingManager.update(original.getId(), place("Changed", "Other", 1, PriceRange.ONE, 3)));
+        assertThrows(IOException.class, () -> failingManager.delete(original.getId()));
+
+        assertEquals(List.of("Original"), failingManager.getPlaces().stream().map(FoodPlace::getName).toList());
+    }
+
     /** Verifies that invalid required fields, distances, and ratings are rejected. */
     @Test
     void invalidPlaceDetailsAreRejected() {

@@ -248,7 +248,7 @@ class SavedPlacesView {
         row.setAccessibleText("View details for " + place.getName());
         row.setOnMouseClicked(event -> app.showPlaceDetails(place));
         row.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
+            if (event.getCode() == KeyCode.ENTER && event.getTarget() == row) {
                 app.showPlaceDetails(place);
             }
         });
@@ -295,6 +295,7 @@ class SavedPlacesView {
         Button button = new Button(icon);
         button.getStyleClass().add("row-icon-button");
         button.setTooltip(new Tooltip(tooltip));
+        button.setAccessibleText(tooltip);
         return button;
     }
 

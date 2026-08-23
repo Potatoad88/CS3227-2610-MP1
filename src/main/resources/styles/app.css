@@ -654,6 +654,11 @@
     -fx-text-fill: #93c5fd;
 }
 
+.dark .outline-button:focused,
+.dark .theme-toggle:focused {
+    -fx-border-color: #60a5fa;
+}
+
 .dark .choice-box .context-menu {
     -fx-background-color: #2a3749;
     -fx-border-color: #46566c;
@@ -699,4 +704,22 @@
 .dark .row-icon-button:hover {
     -fx-background-color: #334e72;
     -fx-text-fill: #bfdbfe;
+}
+
+.dark .scroll-bar:vertical,
+.dark .scroll-bar:horizontal,
+.dark .scroll-bar .track,
+.dark .scroll-bar .increment-button,
+.dark .scroll-bar .decrement-button {
+    -fx-background-color: #18212f;
+}
+
+.dark .scroll-bar .thumb {
+    -fx-background-color: #46566c;
+    -fx-background-radius: 999;
+}
+
+.dark .scroll-bar .increment-arrow,
+.dark .scroll-bar .decrement-arrow {
+    -fx-background-color: #aebdd0;
 }
