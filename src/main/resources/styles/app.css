@@ -492,6 +492,10 @@
     -fx-background-radius: 12;
 }
 
+.text-area.field-control:focused .content {
+    -fx-background-color: #ffffff;
+}
+
 .star-row {
     -fx-background-color: #eef3f8;
     -fx-border-color: #d5e0ea;
@@ -635,11 +639,15 @@
 .dark .theme-toggle,
 .dark .row-icon-button,
 .dark .field-control,
-.dark .text-area.field-control .content,
 .dark .star-row {
     -fx-background-color: #2a3749;
     -fx-border-color: #46566c;
     -fx-text-fill: #f8fafc;
+}
+
+.dark .text-area.field-control .content {
+    -fx-background-color: #2a3749;
+    -fx-border-color: transparent;
 }
 
 .dark .outline-button {
@@ -670,10 +678,14 @@
     -fx-text-fill: #f8fafc;
 }
 
-.dark .field-control:focused,
-.dark .text-area.field-control:focused .content {
+.dark .field-control:focused {
     -fx-background-color: #344258;
     -fx-border-color: #60a5fa;
+}
+
+.dark .text-area.field-control:focused .content {
+    -fx-background-color: #344258;
+    -fx-border-color: transparent;
 }
 
 .dark .choice-box .label,
