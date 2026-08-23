@@ -286,6 +286,13 @@
 .outline-button {
     -fx-text-fill: #2563eb;
     -fx-border-color: #93b4ff;
+    -fx-background-insets: 1;
+}
+
+.outline-button:focused {
+    -fx-border-color: #2563eb;
+    -fx-border-width: 2;
+    -fx-background-insets: 2;
 }
 
 .scroll {
@@ -624,6 +631,7 @@
 .dark .filter-distance,
 .dark .filter-choice,
 .dark .secondary-button,
+.dark .outline-button,
 .dark .theme-toggle,
 .dark .row-icon-button,
 .dark .field-control,
@@ -632,6 +640,23 @@
     -fx-background-color: #2a3749;
     -fx-border-color: #46566c;
     -fx-text-fill: #f8fafc;
+}
+
+.dark .outline-button {
+    -fx-text-fill: #93c5fd;
+}
+
+.dark .choice-box .context-menu {
+    -fx-background-color: #2a3749;
+    -fx-border-color: #46566c;
+}
+
+.dark .choice-box .menu-item > .label {
+    -fx-text-fill: #e5edf7;
+}
+
+.dark .choice-box .menu-item:focused {
+    -fx-background-color: #334e72;
 }
 
 .dark .search-button:hover {
