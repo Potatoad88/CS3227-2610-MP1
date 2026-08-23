@@ -58,11 +58,7 @@ public class FilterCriteria {
         if (query.isEmpty()) {
             return true;
         }
-        return contains(place.getName());
-    }
-
-    private boolean contains(String value) {
-        return value != null && value.toLowerCase(Locale.ROOT).contains(query);
+        return place.getName().toLowerCase(Locale.ROOT).contains(query);
     }
 
     private boolean isAny(String value) {

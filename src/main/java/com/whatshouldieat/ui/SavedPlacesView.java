@@ -319,11 +319,7 @@ class SavedPlacesView {
     }
 
     private String stars(int rating) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 1; i <= 5; i++) {
-            builder.append(i <= rating ? "★" : "☆");
-        }
-        return builder.toString();
+        return "★".repeat(rating) + "☆".repeat(5 - rating);
     }
 
     private String formatDistance(double distance) {
@@ -334,7 +330,7 @@ class SavedPlacesView {
     }
 
     private void pickRandom() {
-        Optional<FoodPlace> picked = picker.pick(manager.getPlaces(), criteria());
+        Optional<FoodPlace> picked = picker.pick(manager.search(criteria()));
         if (picked.isEmpty()) {
             AppDialog.showInfo(placeList, "↯", "No Match", "No places match the current picker filters.");
             return;

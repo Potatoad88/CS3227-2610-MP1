@@ -91,9 +91,10 @@ public class PlaceManager {
                 replacement.getDistanceKm(), replacement.getPriceRange(), replacement.getRating(),
                 replacement.getTags(), replacement.getNotes());
         List<FoodPlace> updated = new ArrayList<>(places);
-        updated.set(places.indexOf(existing), persisted);
+        int index = places.indexOf(existing);
+        updated.set(index, persisted);
         storage.save(updated);
-        existing.updateFrom(replacement);
+        places.set(index, persisted);
     }
 
     /**

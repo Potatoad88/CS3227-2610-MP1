@@ -165,16 +165,18 @@ class PlaceManagerTest {
 
     /** Verifies that random selection excludes every place failing the criteria. */
     @Test
-    void randomPickerOnlyUsesMatchingPlaces() {
+    void randomPickerOnlyUsesMatchingPlaces() throws IOException {
         FoodPlace included = place("Nearby", "Local", 1, PriceRange.ONE, 3);
         FoodPlace excluded = place("Far Away", "Local", 20, PriceRange.ONE, 3);
         RandomPicker picker = new RandomPicker(new Random(1));
+        manager.add(included);
+        manager.add(excluded);
 
-        Optional<FoodPlace> picked = picker.pick(List.of(included, excluded),
-                new FilterCriteria("", "Any Cuisine", "Any Price", "5"));
+        Optional<FoodPlace> picked = picker.pick(manager.search(
+                new FilterCriteria("", "Any Cuisine", "Any Price", "5")));
 
         assertEquals(included, picked.orElseThrow());
-        assertTrue(picker.pick(List.of(excluded), new FilterCriteria("nearby")).isEmpty());
+        assertTrue(picker.pick(manager.search(new FilterCriteria("missing"))).isEmpty());
     }
 
     /** Verifies that every stored field and escaped character survives a round trip. */

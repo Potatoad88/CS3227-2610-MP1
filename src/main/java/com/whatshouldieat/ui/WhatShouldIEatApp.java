@@ -12,8 +12,6 @@ import java.nio.file.Paths;
  * JavaFX entry point for the What Should I Eat desktop application.
  */
 public class WhatShouldIEatApp extends Application {
-    private AppView appView;
-
     /**
      * Launches the JavaFX application.
      *
@@ -26,7 +24,7 @@ public class WhatShouldIEatApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         PlaceManager manager = new PlaceManager(new JsonPlaceStorage(Paths.get("data", "places.json")));
-        appView = new AppView(manager);
+        AppView appView = new AppView(manager);
         Scene scene = new Scene(appView.getRoot(), 1120, 720);
         scene.getStylesheets().add(getClass().getResource("/styles/app.css").toExternalForm());
         stage.setTitle("What Should I Eat?");

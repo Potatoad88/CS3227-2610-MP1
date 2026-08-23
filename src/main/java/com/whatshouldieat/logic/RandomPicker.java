@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.Random;
 
 /**
- * Selects a random food place from those matching the active filters.
+ * Selects a random food place from a supplied list.
  */
 public class RandomPicker {
     private final Random random;
@@ -27,19 +27,15 @@ public class RandomPicker {
     }
 
     /**
-     * Randomly selects one place that satisfies the supplied criteria.
+     * Randomly selects one place from the supplied list.
      *
      * @param places places available for selection
-     * @param criteria filters that determine which places are eligible
-     * @return the selected place, or an empty optional when none are eligible
+     * @return the selected place, or an empty optional when the list is empty
      */
-    public Optional<FoodPlace> pick(List<FoodPlace> places, FilterCriteria criteria) {
-        List<FoodPlace> eligible = places.stream()
-                .filter(criteria::matches)
-                .toList();
-        if (eligible.isEmpty()) {
+    public Optional<FoodPlace> pick(List<FoodPlace> places) {
+        if (places.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(eligible.get(random.nextInt(eligible.size())));
+        return Optional.of(places.get(random.nextInt(places.size())));
     }
 }

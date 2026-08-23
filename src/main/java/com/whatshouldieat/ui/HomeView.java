@@ -1,6 +1,5 @@
 package com.whatshouldieat.ui;
 
-import com.whatshouldieat.logic.FilterCriteria;
 import com.whatshouldieat.logic.PlaceManager;
 import com.whatshouldieat.logic.RandomPicker;
 import com.whatshouldieat.model.FoodPlace;
@@ -108,7 +107,7 @@ class HomeView {
     }
 
     private void pickRandom() {
-        Optional<FoodPlace> picked = picker.pick(manager.getPlaces(), new FilterCriteria(""));
+        Optional<FoodPlace> picked = picker.pick(manager.getPlaces());
         if (picked.isEmpty()) {
             AppDialog.showInfo(app.getRoot(), "↯", "Nothing to pick yet", "Add at least one food place first.");
             return;

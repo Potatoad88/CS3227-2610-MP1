@@ -40,11 +40,11 @@ The UI depends on the logic layer, while logic depends on model and storage. Mod
 
 ### Domain and Logic
 
-`FoodPlace` stores `id`, `name`, `cuisine`, `distanceKm`, `priceRange`, `rating`, `tags`, and `notes`. IDs are UUID strings generated independently of names, allowing duplicate names while keeping updates unambiguous.
+`FoodPlace` stores immutable `id`, `name`, `cuisine`, `distanceKm`, `priceRange`, `rating`, `tags`, and `notes`. IDs are UUID strings generated independently of names, allowing duplicate names while keeping updates unambiguous.
 
 `PlaceManager` loads the in-memory list, returns places sorted case-insensitively by name, validates mutations, and persists CRUD operations. Names and cuisines must be non-blank, distance must be finite and non-negative, and rating must be from 1 to 5.
 
-`FilterCriteria` combines case-insensitive name search with exact cuisine, exact price, and maximum-distance checks. `RandomPicker` first filters the supplied list and returns `Optional.empty()` when no eligible place exists. Injecting `Random` through its second constructor makes selection deterministic in tests.
+`FilterCriteria` combines case-insensitive name search with exact cuisine, exact price, and maximum-distance checks. The UI gives `RandomPicker` the matching results, and the picker returns `Optional.empty()` when that list is empty. Injecting `Random` through its second constructor makes selection deterministic in tests.
 
 ### Storage
 

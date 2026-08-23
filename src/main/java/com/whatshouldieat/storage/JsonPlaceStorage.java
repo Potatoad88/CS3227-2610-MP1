@@ -52,7 +52,7 @@ public class JsonPlaceStorage {
                     values.get("id"),
                     values.getOrDefault("name", ""),
                     values.getOrDefault("cuisine", ""),
-                    parseDistance(values),
+                    Double.parseDouble(values.getOrDefault("distanceKm", "0")),
                     PriceRange.fromLabel(values.getOrDefault("priceRange", "$$")),
                     Integer.parseInt(values.getOrDefault("rating", "3")),
                     parseTags(values.getOrDefault("tags", "")),
@@ -210,10 +210,6 @@ public class JsonPlaceStorage {
                 .map(String::trim)
                 .filter(tag -> !tag.isEmpty())
                 .toList();
-    }
-
-    private double parseDistance(Map<String, String> values) {
-        return Double.parseDouble(values.getOrDefault("distanceKm", "0"));
     }
 
 }

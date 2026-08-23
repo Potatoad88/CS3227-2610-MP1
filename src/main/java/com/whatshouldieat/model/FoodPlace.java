@@ -13,13 +13,13 @@ import java.util.UUID;
  */
 public class FoodPlace {
     private final String id;
-    private String name;
-    private String cuisine;
-    private double distanceKm;
-    private PriceRange priceRange;
-    private int rating;
+    private final String name;
+    private final String cuisine;
+    private final double distanceKm;
+    private final PriceRange priceRange;
+    private final int rating;
     private final List<String> tags;
-    private String notes;
+    private final String notes;
 
     /**
      * Creates a food place with a generated identifier.
@@ -102,19 +102,4 @@ public class FoodPlace {
         return notes;
     }
 
-    /**
-     * Replaces this place's editable details while preserving its identifier.
-     *
-     * @param other place containing the replacement details
-     */
-    public void updateFrom(FoodPlace other) {
-        this.name = other.name;
-        this.cuisine = other.cuisine;
-        this.distanceKm = other.distanceKm;
-        this.priceRange = other.priceRange;
-        this.rating = other.rating;
-        this.tags.clear();
-        this.tags.addAll(other.tags);
-        this.notes = other.notes;
-    }
 }
