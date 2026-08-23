@@ -1,6 +1,27 @@
 # What Should I Eat?
 
-A Java desktop app for saving food places and randomly choosing where to eat.
+A Java desktop app for saving food places and randomly choosing where to eat when indecisive.
+
+## Features
+
+- **Manage food places:** Add, view, edit, and delete places with cuisine, price, rating, distance, tags, and personal notes.
+- **Search and filter:** Find saved places by name and filter them by cuisine, price range, and maximum distance.
+- **Random place picker:** Choose randomly from places matching the submitted search and active filters.
+- **Local persistence:** Retain saved places and light/dark theme preferences between launches.
+
+## Demo Workflows
+
+### Manage Food Places
+
+[Watch the manage food places demo](docs/media/manage-food-places.mp4)
+
+### Search and Filter
+
+[Watch the search and filter demo](docs/media/search-and-filter.mp4)
+
+### Filtered Random Picker
+
+[Watch the filtered random picker demo](docs/media/filtered-random-picker.mp4)
 
 ## Requirements
 
