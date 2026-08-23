@@ -13,15 +13,15 @@ A Java desktop app for saving food places and randomly choosing where to eat whe
 
 ### Manage Food Places
 
-[Watch the manage food places demo](docs/media/manage-food-places.mp4)
+![Manage food places demo](docs/media/manage-food-places.gif)
 
 ### Search and Filter
 
-[Watch the search and filter demo](docs/media/search-and-filter.mp4)
+![Search and filter demo](docs/media/search-and-filter.gif)
 
 ### Filtered Random Picker
 
-[Watch the filtered random picker demo](docs/media/filtered-random-picker.mp4)
+![Filtered random picker demo](docs/media/filtered-random-picker.gif)
 
 ## Requirements
 
