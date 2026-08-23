@@ -73,7 +73,7 @@ Form and filter validation errors are displayed in wrapping application dialogs.
 
 ## Build and Test Process
 
-The official Gradle wrapper downloads Gradle 8.10.2 and resolves the JavaFX native libraries for the current operating system. Useful macOS/Linux commands from the project root are:
+The official Gradle wrapper downloads Gradle 8.10.2 and resolves the JavaFX native libraries for the current operating system. The build accepts JDK 17 through 23 and compiles with `--release 17`, keeping the generated classes compatible with Java 17. Useful macOS/Linux commands from the project root are:
 
 ```bash
 ./gradlew run          # compile and launch the app
@@ -96,7 +96,7 @@ JavaFX layout and theme appearance remain manual-test concerns. The release shou
 
 ## Continuous Integration and Dependency Updates
 
-GitHub Actions runs the **Tests** workflow on every push to `master` and on pull requests targeting `master`. It uses Temurin Java 17 and runs the suite separately on Ubuntu and Windows with each platform's native Gradle wrapper launcher.
+GitHub Actions runs the **Tests** workflow on every push to `master` and on pull requests targeting `master`. It runs the JUnit 6 suite with Temurin Java 17 and 21 on Ubuntu and Windows, using each platform's native Gradle wrapper launcher.
 
 The separate **CodeQL** workflow runs on the same events and once a week. It analyses the Java source with read-only repository access plus permission to publish security results. Keeping the workflows separate makes test failures and security-analysis results easy to distinguish.
 
@@ -116,7 +116,7 @@ A future release may introduce a location service only when Maps is implemented.
 
 - The visual direction was adapted from three prototype screenshots supplied by the project author. No image assets or source code were copied from them.
 - Product planning, implementation drafts, reviews, debugging, Javadocs, tests, and documentation were developed with OpenAI ChatGPT and Codex. All generated output was reviewed and adapted for this project.
-- Code-simplification reviews used Dietrich Gebert's Ponytail Codex plugin. Its guidance influenced removal of unused favourite-related behavior and speculative abstractions; no Ponytail source code is included in the app.
-- The project uses [OpenJFX](https://openjfx.io/) for its desktop UI, [Gradle](https://gradle.org/) for builds, and [JUnit 5](https://junit.org/junit5/) for automated tests.
+- Code-simplification reviews used Dietrich Gebert's Ponytail Codex plugin. Its guidance influenced removal of unused favourite-related behaviour, unnecessary mutation, and duplicated filtering responsibility; no Ponytail source code is included in the app.
+- The project uses [OpenJFX](https://openjfx.io/) for its desktop UI, [Gradle](https://gradle.org/) for builds, and [JUnit](https://junit.org/) for automated tests.
 - Repository automation uses [GitHub Actions](https://github.com/features/actions), [CodeQL](https://codeql.github.com/), and [Dependabot](https://docs.github.com/en/code-security/dependabot).
 - JavaFX and Unicode symbols provide the interface icons. No third-party icon artwork is bundled.

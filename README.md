@@ -26,7 +26,7 @@ A Java desktop app for saving food places and randomly choosing where to eat whe
 ## Requirements
 
 - Windows, macOS, or Linux
-- A 64-bit JDK 17 or newer
+- A 64-bit JDK from version 17 through 23; JDK 17 and 21 are tested
 - Internet access for the first build
 
 Gradle does not need to be installed separately.

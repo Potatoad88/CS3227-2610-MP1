@@ -7,7 +7,7 @@ What Should I Eat? is an offline Java desktop app for maintaining a personal lis
 ## Requirements
 
 - Windows, macOS, or Linux with a terminal
-- A 64-bit JDK 17 or newer
+- A 64-bit JDK from version 17 through 23; JDK 17 and 21 are tested
 - Internet access on the first build so Gradle can download JavaFX and test dependencies
 
 No global Gradle installation is required. The included Gradle wrapper downloads and uses Gradle 8.10.2 when needed.
@@ -43,8 +43,8 @@ For a quick manual acceptance test:
 3. Search using part of its name with the search button, then clear the field and confirm all results return immediately.
 4. Edit that place, return to the list, and confirm the changes appear.
 5. Apply a filter that includes only that place and press **Random**; the result must come from the visible filtered set.
-6. Delete the place and confirm the deletion dialog before removal.
-7. Restart the app and confirm the place and the selected light/dark theme are retained.
+6. Restart the app and confirm the place and the selected light/dark theme are retained.
+7. Delete the place and confirm the deletion dialog before removal.
 
 ## Home Page
 
@@ -107,7 +107,7 @@ To reset the saved-place list, close the app and delete `data/places.json` or re
 ## Troubleshooting
 
 - `Permission denied: ./gradlew`: run `chmod +x gradlew`.
-- `'java' is not recognized` on Windows: install a 64-bit JDK 17 or newer, then reopen the terminal and run `java -version`.
-- Java toolchain error: install JDK 17 or newer and ensure `java -version` works.
+- `'java' is not recognized` on Windows: install a supported 64-bit JDK, then reopen the terminal and run `java -version`.
+- Unsupported Java version: install JDK 17 or 21 and ensure `java -version` reports the expected version.
 - Dependency download error: reconnect to the Internet and rerun the launch command for your operating system.
 - App fails after manual data edits: close the app and restore valid JSON, use `[]`, or delete `data/places.json` to start empty again.
