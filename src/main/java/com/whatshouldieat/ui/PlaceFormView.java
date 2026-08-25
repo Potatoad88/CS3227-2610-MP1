@@ -63,7 +63,8 @@ class PlaceFormView {
         card.getStyleClass().add("form-card");
         Label heading = new Label("Restaurant Details");
         heading.getStyleClass().add("form-heading");
-        cuisine.getItems().addAll("Japanese", "Italian", "Mexican", "Chinese", "Indian", "Korean", "Thai", "Western", "Local", "Other");
+        cuisine.getItems().addAll("Japanese", "Italian", "Mexican", "Chinese", "Indian", "Korean", "Thai",
+                "Western", "Local", "Other");
         cuisine.setValue("Japanese");
         price.getItems().addAll("$", "$$", "$$$", "$$$$");
         price.setValue("$$");

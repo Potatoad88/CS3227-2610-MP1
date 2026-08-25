@@ -41,7 +41,8 @@ class HomeView {
         badge.getStyleClass().add("badge");
         Label title = new Label("Your Personal\nCulinary Compass");
         title.getStyleClass().add("hero-title");
-        Label body = new Label("A personal desktop tool to manage, curate, and discover saved food places. Stop wondering what's for dinner and start exploring your list.");
+        Label body = new Label("A personal desktop tool to manage, curate, and discover saved food places. "
+                + "Stop wondering what's for dinner and start exploring your list.");
         body.getStyleClass().add("hero-body");
         body.setWrapText(true);
         Button pickerButton = new Button("↯ Random Craving Picker");
@@ -59,9 +60,12 @@ class HomeView {
         GridPane features = new GridPane();
         features.setHgap(14);
         features.setVgap(14);
-        features.add(feature("⌘", "Curated Food List", "Add, update, and organize restaurants with cuisine, price, distance, rating, tags, and notes."), 0, 0);
-        features.add(feature("↯", "Random Craving Generator", "Let the app select a matching food place from your curated list when you cannot decide."), 1, 0);
-        features.add(feature("◎", "Distance Aware", "Keep simple distance values now, with room for future map-powered automation later."), 2, 0);
+        features.add(feature("⌘", "Curated Food List",
+                "Add, update, and organize restaurants with cuisine, price, distance, rating, tags, and notes."), 0, 0);
+        features.add(feature("↯", "Random Craving Generator",
+                "Let the app select a matching food place from your curated list when you cannot decide."), 1, 0);
+        features.add(feature("◎", "Distance Aware",
+                "Keep simple distance values now, with room for future map-powered automation later."), 2, 0);
         for (int i = 0; i < 3; i++) {
             javafx.scene.layout.ColumnConstraints column = new javafx.scene.layout.ColumnConstraints();
             column.setPercentWidth(33.3);

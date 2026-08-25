@@ -78,11 +78,12 @@ End users launch the matching JAR from `release/`; Gradle commands are maintaine
 ```bash
 ./gradlew run          # compile and launch the app
 ./gradlew test         # run the JUnit 6 suite
-./gradlew clean build  # clean, compile, test, and package
+./gradlew check        # run tests and Checkstyle
+./gradlew clean build  # clean, check, and package
 ./gradlew releaseJars  # build all platform-specific executable JARs
 ```
 
-Windows uses the equivalent commands `gradlew.bat run`, `gradlew.bat test`, `gradlew.bat clean build`, and `gradlew.bat releaseJars`. The four release tasks merge the application classes and the matching JavaFX modules into separate JARs for Windows x64, Linux x64, Intel macOS, and Apple silicon macOS. `Launcher` does not extend `javafx.application.Application`, which allows `java -jar` to reach the bundled JavaFX runtime correctly. The optional `test.sh` delegates to `./gradlew test` on macOS/Linux so there is one test definition and one build lifecycle. Tests use JUnit's `@TempDir`; they never touch production data.
+Windows uses the equivalent commands with `gradlew.bat`. Checkstyle 14.0.0 checks main and test code for consistent imports, naming, braces, whitespace, line length, public API Javadocs, and common correctness issues. Its rules are stored in `config/checkstyle/checkstyle.xml`, and violations fail the Gradle `check` task. The four release tasks merge the application classes and the matching JavaFX modules into separate JARs for Windows x64, Linux x64, Intel macOS, and Apple silicon macOS. `Launcher` does not extend `javafx.application.Application`, which allows `java -jar` to reach the bundled JavaFX runtime correctly. The optional `test.sh` delegates to `./gradlew test` on macOS/Linux so there is one test definition and one build lifecycle. Tests use JUnit's `@TempDir`; they never touch production data.
 
 The automated suite covers:
 
@@ -97,7 +98,7 @@ JavaFX layout and theme appearance remain manual-test concerns. The release shou
 
 ## Continuous Integration and Dependency Updates
 
-GitHub Actions runs the **Tests** workflow on every push to `master` and on pull requests targeting `master`. It uses Temurin Java 25 to run the complete JUnit 6 suite and package the matching release JAR on Ubuntu x64, Windows x64, Apple silicon macOS, and Intel macOS. Each successful job uploads its JAR as a workflow artifact. This verifies compilation, tests, and packaging on all three required operating systems; JavaFX interaction and appearance still require manual launches on representative machines.
+GitHub Actions runs the **Tests** workflow on every push to `master` and on pull requests targeting `master`. It uses Temurin Java 25 to run Gradle `check`, including the complete JUnit 6 suite and Checkstyle, and package the matching release JAR on Ubuntu x64, Windows x64, Apple silicon macOS, and Intel macOS. Each successful job uploads its JAR as a workflow artifact. This verifies compilation, tests, static style checks, and packaging on all three required operating systems; JavaFX interaction and appearance still require manual launches on representative machines.
 
 The separate **CodeQL** workflow runs on the same events and once a week. It analyses the Java source with read-only repository access plus permission to publish security results. Keeping the workflows separate makes test failures and security-analysis results easy to distinguish.
 

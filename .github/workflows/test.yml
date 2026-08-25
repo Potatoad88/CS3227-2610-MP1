@@ -48,8 +48,8 @@ jobs:
           distribution: temurin
           java-version: "25"
 
-      - name: Test and package
-        run: ${{ matrix.gradle }} --no-daemon clean test ${{ matrix.release-task }}
+      - name: Check and package
+        run: ${{ matrix.gradle }} --no-daemon clean check ${{ matrix.release-task }}
 
       - name: Upload release JAR
         uses: actions/upload-artifact@v4
