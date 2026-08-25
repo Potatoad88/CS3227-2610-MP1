@@ -26,39 +26,17 @@ A Java desktop app for saving food places and randomly choosing where to eat whe
 ## Requirements
 
 - Windows, macOS, or Linux
-- A 64-bit JDK from version 17 through 23; JDK 17 and 21 are tested
-- Internet access for the first build
+- A 64-bit JDK 25
+- Internet access to download the JAR and JDK
 
-Gradle does not need to be installed separately.
+## Download and Run
 
-## Run
-
-On Windows:
-
-```bat
-gradlew.bat run
-```
-
-On macOS or Linux:
+Download the matching JAR from [`release/`](release), place it in a folder for the app, and run it with Java 25:
 
 ```bash
-./gradlew run
+java -jar WhatShouldIEat-<platform>.jar
 ```
 
-The Gradle wrapper downloads Gradle and the JavaFX dependencies when needed.
-
-## Test
-
-On Windows:
-
-```bat
-gradlew.bat test
-```
-
-On macOS or Linux:
-
-```bash
-./gradlew test
-```
+Choose `windows-x64`, `linux-x64`, `macos-x64`, or `macos-arm64` for `<platform>`.
 
 See [the User Guide](docs/UserGuide.md) for all features, setup details, and troubleshooting. Saved data is written to `data/places.json` when the app runs.

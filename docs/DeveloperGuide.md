@@ -2,7 +2,7 @@
 
 ## Product and Technology
 
-What Should I Eat? is an offline Java 17 desktop application built with JavaFX 21 and Gradle. Its release scope is CRUD for food places, text and field filtering, filtered random selection, JSON persistence, and a persistent light/dark theme.
+What Should I Eat? is an offline Java SE 25 desktop application built with JavaFX 25 and Gradle. Its release scope is CRUD for food places, text and field filtering, filtered random selection, JSON persistence, and a persistent light/dark theme.
 
 ## Architecture
 
@@ -32,7 +32,7 @@ The UI depends on the logic layer, while logic depends on model and storage. Mod
 
 ### Application and Views
 
-`WhatShouldIEatApp` creates one `PlaceManager`, the root `AppView`, and the JavaFX scene. `AppView` owns navigation and stores the theme preference using `java.util.prefs.Preferences`. Home, saved-list, details, and form views are recreated when navigating, so each page reflects the latest manager state.
+`Launcher` provides the plain Java entry point used by executable JARs and delegates to `WhatShouldIEatApp`. The latter creates one `PlaceManager`, the root `AppView`, and the JavaFX scene. `AppView` owns navigation and stores the theme preference using `java.util.prefs.Preferences`. Home, saved-list, details, and form views are recreated when navigating, so each page reflects the latest manager state.
 
 `SavedPlacesView` keeps typed search text and pending filter controls separate from their applied values. Name search is submitted with Enter or the search button, while clearing the field removes the applied query immediately. Field filters are applied only through **Apply Filters**. Both the displayed list and its random picker use the same `FilterCriteria`, preventing filtered-out places from being selected. Rows open `PlaceDetailsView` by mouse or keyboard, while their edit and delete controls keep independent actions.
 
@@ -73,15 +73,16 @@ Form and filter validation errors are displayed in wrapping application dialogs.
 
 ## Build and Test Process
 
-The official Gradle wrapper downloads Gradle 8.10.2 and resolves the JavaFX native libraries for the current operating system. The build accepts JDK 17 through 23 and compiles with `--release 17`, keeping the generated classes compatible with Java 17. Useful macOS/Linux commands from the project root are:
+End users launch the matching JAR from `release/`; Gradle commands are maintained for development, testing, CI, and release generation only. The official Gradle wrapper downloads Gradle 9.1.0. The Java toolchain and compiler release are both fixed at Java 25, matching the assignment default. The OpenJFX Gradle plugin resolves JavaFX 25 native libraries for developer launches on the current operating system. Useful macOS/Linux commands from the project root are:
 
 ```bash
 ./gradlew run          # compile and launch the app
-./gradlew test         # run the JUnit 5 suite
+./gradlew test         # run the JUnit 6 suite
 ./gradlew clean build  # clean, compile, test, and package
+./gradlew releaseJars  # build all platform-specific executable JARs
 ```
 
-Windows uses the equivalent commands `gradlew.bat run`, `gradlew.bat test`, and `gradlew.bat clean build`. The optional `test.sh` delegates to `./gradlew test` on macOS/Linux so there is one test definition and one build lifecycle. Tests use JUnit's `@TempDir`; they never touch production data.
+Windows uses the equivalent commands `gradlew.bat run`, `gradlew.bat test`, `gradlew.bat clean build`, and `gradlew.bat releaseJars`. The four release tasks merge the application classes and the matching JavaFX modules into separate JARs for Windows x64, Linux x64, Intel macOS, and Apple silicon macOS. `Launcher` does not extend `javafx.application.Application`, which allows `java -jar` to reach the bundled JavaFX runtime correctly. The optional `test.sh` delegates to `./gradlew test` on macOS/Linux so there is one test definition and one build lifecycle. Tests use JUnit's `@TempDir`; they never touch production data.
 
 The automated suite covers:
 
@@ -96,7 +97,7 @@ JavaFX layout and theme appearance remain manual-test concerns. The release shou
 
 ## Continuous Integration and Dependency Updates
 
-GitHub Actions runs the **Tests** workflow on every push to `master` and on pull requests targeting `master`. It runs the JUnit 6 suite with Temurin Java 17 and 21 on Ubuntu and Windows, using each platform's native Gradle wrapper launcher.
+GitHub Actions runs the **Tests** workflow on every push to `master` and on pull requests targeting `master`. It uses Temurin Java 25 to run the complete JUnit 6 suite and package the matching release JAR on Ubuntu x64, Windows x64, Apple silicon macOS, and Intel macOS. Each successful job uploads its JAR as a workflow artifact. This verifies compilation, tests, and packaging on all three required operating systems; JavaFX interaction and appearance still require manual launches on representative machines.
 
 The separate **CodeQL** workflow runs on the same events and once a week. It analyses the Java source with read-only repository access plus permission to publish security results. Keeping the workflows separate makes test failures and security-analysis results easy to distinguish.
 
