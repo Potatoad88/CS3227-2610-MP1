@@ -6,7 +6,7 @@ I provided an updated assignment announcement requiring Java SE 25, correct oper
 
 ## Decisions
 
-- Upgraded the official Gradle wrapper from 8.10.2 to 9.1.0 because Gradle 9.1 is the first version that can run on Java 25.
+- Initially upgraded the official Gradle wrapper from 8.10.2 to 9.1.0 because Gradle 9.1 is the first version that can run on Java 25. Dependabot later updated it to 9.7.1 after the pull request passed the complete CI matrix.
 - Updated compilation and the Java toolchain to Java 25 and JavaFX to 25.0.2.
 - Kept source launch through `gradlew` and `gradlew.bat`.
 - Added a plain `Launcher` class for executable JAR startup.

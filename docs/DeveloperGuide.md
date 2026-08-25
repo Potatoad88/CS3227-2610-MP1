@@ -73,7 +73,7 @@ Form and filter validation errors are displayed in wrapping application dialogs.
 
 ## Build and Test Process
 
-End users launch the matching JAR from `release/`; Gradle commands are maintained for development, testing, CI, and release generation only. The official Gradle wrapper downloads Gradle 9.1.0. The Java toolchain and compiler release are both fixed at Java 25, matching the assignment default. The OpenJFX Gradle plugin resolves JavaFX 25 native libraries for developer launches on the current operating system. Useful macOS/Linux commands from the project root are:
+End users launch the matching JAR from `release/`; Gradle commands are maintained for development, testing, CI, and release generation only. The official Gradle wrapper downloads Gradle 9.7.1. The Java toolchain and compiler release are both fixed at Java 25, matching the assignment default. The OpenJFX Gradle plugin resolves JavaFX 25 native libraries for developer launches on the current operating system. Useful macOS/Linux commands from the project root are:
 
 ```bash
 ./gradlew run          # compile and launch the app
