@@ -258,7 +258,8 @@ class SavedPlacesView {
         Label name = new Label(place.getName());
         name.getStyleClass().add("place-name");
         Label details = new Label(place.getCuisine() + "  ·  " + place.getPriceRange().getLabel() + "  ·  "
-                + formatDistance(place.getDistanceKm()) + " km  ·  " + stars(place.getRating()));
+                + PlaceFormatter.distance(place.getDistanceKm()) + " km  ·  "
+                + PlaceFormatter.stars(place.getRating()));
         details.getStyleClass().add("place-detail");
         details.setWrapText(true);
         VBox identity = new VBox(5, name, details);
@@ -318,17 +319,6 @@ class SavedPlacesView {
         return "FD";
     }
 
-    private String stars(int rating) {
-        return "★".repeat(rating) + "☆".repeat(5 - rating);
-    }
-
-    private String formatDistance(double distance) {
-        if (distance == Math.rint(distance)) {
-            return String.valueOf((int) distance);
-        }
-        return String.format("%.1f", distance);
-    }
-
     private void pickRandom() {
         Optional<FoodPlace> picked = picker.pick(manager.search(criteria()));
         if (picked.isEmpty()) {
@@ -338,7 +328,8 @@ class SavedPlacesView {
         FoodPlace place = picked.get();
         AppDialog.showInfo(placeList, "★", "Random Pick",
                 "Try " + place.getName() + "\n" + place.getPriceRange().getLabel() + " · "
-                        + formatDistance(place.getDistanceKm()) + " km · " + stars(place.getRating()));
+                        + PlaceFormatter.distance(place.getDistanceKm()) + " km · "
+                        + PlaceFormatter.stars(place.getRating()));
     }
 
     private void delete(FoodPlace place) {

@@ -64,8 +64,8 @@ class HomeView {
                 "Add, update, and organize restaurants with cuisine, price, distance, rating, tags, and notes."), 0, 0);
         features.add(feature("↯", "Random Craving Generator",
                 "Let the app select a matching food place from your curated list when you cannot decide."), 1, 0);
-        features.add(feature("◎", "Distance Aware",
-                "Keep simple distance values now, with room for future map-powered automation later."), 2, 0);
+        features.add(feature("☷", "Search and Filter",
+                "Find places by name and narrow results by cuisine, price range, and maximum distance."), 2, 0);
         for (int i = 0; i < 3; i++) {
             javafx.scene.layout.ColumnConstraints column = new javafx.scene.layout.ColumnConstraints();
             column.setPercentWidth(33.3);
@@ -119,6 +119,7 @@ class HomeView {
         FoodPlace place = picked.get();
         AppDialog.showInfo(app.getRoot(), "★", "Tonight's Pick",
                 place.getName() + "\n" + place.getCuisine() + " · "
-                        + place.getPriceRange().getLabel() + " · " + place.getDistanceKm() + " km away");
+                        + place.getPriceRange().getLabel() + " · "
+                        + PlaceFormatter.distance(place.getDistanceKm()) + " km away");
     }
 }

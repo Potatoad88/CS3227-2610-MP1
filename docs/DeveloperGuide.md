@@ -83,7 +83,7 @@ End users launch the matching JAR from `release/`; Gradle commands are maintaine
 ./gradlew releaseJars  # build all platform-specific executable JARs
 ```
 
-Windows uses the equivalent commands with `gradlew.bat`. Checkstyle 14.0.0 checks main and test code for consistent imports, naming, braces, whitespace, line length, public API Javadocs, and common correctness issues. Its rules are stored in `config/checkstyle/checkstyle.xml`, and violations fail the Gradle `check` task. The four release tasks merge the application classes and the matching JavaFX modules into separate JARs for Windows x64, Linux x64, Intel macOS, and Apple silicon macOS. `Launcher` does not extend `javafx.application.Application`, which allows `java -jar` to reach the bundled JavaFX runtime correctly. The optional `test.sh` delegates to `./gradlew test` on macOS/Linux so there is one test definition and one build lifecycle. Tests use JUnit's `@TempDir`; they never touch production data.
+Windows uses the equivalent commands with `gradlew.bat`. Checkstyle 14.0.0 checks main and test code for consistent imports, naming, braces, whitespace, line length, public API Javadocs, and common correctness issues. Its rules are stored in `config/checkstyle/checkstyle.xml`, and violations fail the Gradle `check` task. The four release tasks merge the application classes and the matching JavaFX modules into separate JARs for Windows x64, Linux x64, Intel macOS, and Apple silicon macOS. `Launcher` does not extend `javafx.application.Application`, which allows `java -jar` to reach the bundled JavaFX runtime correctly. Tests use JUnit's `@TempDir`; they never touch production data.
 
 The automated suite covers:
 
@@ -92,6 +92,7 @@ The automated suite covers:
 - case-insensitive alphabetical sorting;
 - name-only search combined with cuisine, price, and distance filtering;
 - random selection restricted to eligible places and no-match behavior;
+- consistent UI formatting for ratings and distances, including values larger than a 32-bit integer;
 - JSON round trips for every stored field, including escaped special characters.
 
 JavaFX layout and theme appearance remain manual-test concerns. The release should be checked at the minimum 720 x 480 window size and after an application restart.

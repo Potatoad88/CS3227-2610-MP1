@@ -124,7 +124,7 @@ class PlaceFormView {
         price.setValue(editing.getPriceRange().getLabel());
         selectedRating = editing.getRating();
         updateStars();
-        distanceKm.setText(formatDistance(editing.getDistanceKm()));
+        distanceKm.setText(PlaceFormatter.distance(editing.getDistanceKm()));
         tags.setText(String.join(", ", editing.getTags()));
         notes.setText(editing.getNotes());
     }
@@ -192,12 +192,5 @@ class PlaceFormView {
         } catch (NumberFormatException exception) {
             throw new IllegalArgumentException("Distance must be a number.");
         }
-    }
-
-    private String formatDistance(double distance) {
-        if (distance == Math.rint(distance)) {
-            return String.valueOf((int) distance);
-        }
-        return String.valueOf(distance);
     }
 }

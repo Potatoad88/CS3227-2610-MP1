@@ -43,8 +43,8 @@ class PlaceDetailsView {
                 heading,
                 field("Cuisine Type", place.getCuisine()),
                 field("Price Range", place.getPriceRange().getLabel()),
-                field("Rating", stars(place.getRating())),
-                field("Distance", formatDistance(place.getDistanceKm()) + " km"),
+                field("Rating", PlaceFormatter.stars(place.getRating())),
+                field("Distance", PlaceFormatter.distance(place.getDistanceKm()) + " km"),
                 field("Tags", place.getTags().isEmpty() ? "No tags." : String.join(", ", place.getTags())),
                 field("Personal Notes", place.getNotes().isBlank() ? "No personal notes." : place.getNotes()),
                 actions());
@@ -76,13 +76,5 @@ class PlaceDetailsView {
         edit.getStyleClass().add("primary-button");
         edit.setOnAction(event -> app.showEditPlace(place));
         return new HBox(spacer, edit);
-    }
-
-    private String stars(int rating) {
-        return "★".repeat(rating) + "☆".repeat(5 - rating);
-    }
-
-    private String formatDistance(double distance) {
-        return distance == Math.rint(distance) ? String.valueOf((int) distance) : String.valueOf(distance);
     }
 }

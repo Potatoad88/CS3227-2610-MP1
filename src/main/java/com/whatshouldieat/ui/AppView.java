@@ -17,7 +17,7 @@ import java.util.prefs.Preferences;
  * Owns the application's navigation shell and switches between page views.
  * The selected light or dark theme is restored from user preferences.
  */
-public class AppView {
+class AppView {
     private static final String DARK_MODE = "darkMode";
 
     private final PlaceManager manager;
@@ -29,7 +29,7 @@ public class AppView {
      *
      * @param manager manager providing saved-place operations
      */
-    public AppView(PlaceManager manager) {
+    AppView(PlaceManager manager) {
         this.manager = manager;
         root.getStyleClass().add("app-root");
         setDarkMode(preferences.getBoolean(DARK_MODE, false));
@@ -42,22 +42,22 @@ public class AppView {
      *
      * @return application root
      */
-    public Parent getRoot() {
+    Parent getRoot() {
         return root;
     }
 
     /** Displays the home page. */
-    public void showHome() {
+    void showHome() {
         root.setCenter(new HomeView(manager, this).getRoot());
     }
 
     /** Displays the saved-places page. */
-    public void showSavedPlaces() {
+    void showSavedPlaces() {
         root.setCenter(new SavedPlacesView(manager, this).getRoot());
     }
 
     /** Displays an empty form for adding a food place. */
-    public void showAddPlace() {
+    void showAddPlace() {
         root.setCenter(new PlaceFormView(manager, this, null).getRoot());
     }
 
@@ -66,7 +66,7 @@ public class AppView {
      *
      * @param place place to edit
      */
-    public void showEditPlace(FoodPlace place) {
+    void showEditPlace(FoodPlace place) {
         root.setCenter(new PlaceFormView(manager, this, place).getRoot());
     }
 
@@ -75,7 +75,7 @@ public class AppView {
      *
      * @param place place to display
      */
-    public void showPlaceDetails(FoodPlace place) {
+    void showPlaceDetails(FoodPlace place) {
         root.setCenter(new PlaceDetailsView(this, place).getRoot());
     }
 
