@@ -23,7 +23,8 @@ public class WhatShouldIEatApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        PlaceManager manager = new PlaceManager(new JsonPlaceStorage(Paths.get("data", "places.json")));
+        JsonPlaceStorage storage = new JsonPlaceStorage(Paths.get("data", "places.json"));
+        PlaceManager manager = new PlaceManager(storage);
         AppView appView = new AppView(manager);
         Scene scene = new Scene(appView.getRoot(), 1120, 720);
         scene.getStylesheets().add(getClass().getResource("/styles/app.css").toExternalForm());
@@ -32,5 +33,9 @@ public class WhatShouldIEatApp extends Application {
         stage.setMinHeight(480);
         stage.setScene(scene);
         stage.show();
+        storage.getRecoveredFile().ifPresent(backup -> AppDialog.showInfo(appView.getRoot(), "!",
+                "Saved Data Could Not Be Loaded",
+                "The saved-places file was invalid, so the app started with an empty list. "
+                        + "The original file was preserved at " + backup.toAbsolutePath() + "."));
     }
 }

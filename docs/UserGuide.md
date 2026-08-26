@@ -104,7 +104,9 @@ Press the moon/sun button at the right of the navigation bar to switch themes. T
 
 Places are stored locally in `data/places.json`. If the file does not exist, the app starts with an empty saved-place list. The file is created the next time a place is added, edited, or deleted. An existing file containing `[]` also produces an empty list.
 
-To reset the saved-place list, close the app and delete `data/places.json` or replace its contents with `[]`. Manual editing is not recommended because malformed JSON can prevent startup.
+If the file contains malformed data, the app preserves it beside the original using a name such as `places-corrupted-20260826-143000-000.json`, resets `places.json` to an empty list, and displays the backup location after launch. This avoids blocking startup without silently deleting the original data.
+
+To reset the saved-place list manually, close the app and delete `data/places.json` or replace its contents with `[]`. Manual editing is not recommended.
 
 ## Limitations
 
@@ -118,4 +120,4 @@ To reset the saved-place list, close the app and delete `data/places.json` or re
 - Unsupported Java version: install JDK 25 and ensure `java -version` reports version 25.
 - `UnsupportedClassVersionError`: the selected `java` command is older than Java 25; update `JAVA_HOME` and the system path.
 - JavaFX native-library error from a release JAR: confirm that the JAR matches both the operating system and the architecture reported by the active JDK.
-- App fails after manual data edits: close the app and restore valid JSON, use `[]`, or delete `data/places.json` to start empty again.
+- Malformed-data warning: the app has started with an empty list and preserved the original file at the path shown in the dialog. Keep that backup if its contents may need to be recovered manually.

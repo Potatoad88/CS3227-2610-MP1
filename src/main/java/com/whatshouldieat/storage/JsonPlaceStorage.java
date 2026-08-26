@@ -8,11 +8,14 @@ import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -21,7 +24,10 @@ import java.util.stream.Collectors;
  * <p>A missing or empty storage file represents an empty saved-place list.</p>
  */
 public class JsonPlaceStorage {
+    private static final DateTimeFormatter BACKUP_TIMESTAMP = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSS");
+
     private final Path file;
+    private Path recoveredFile;
 
     /**
      * Creates a storage handler for the specified JSON file.
@@ -40,6 +46,7 @@ public class JsonPlaceStorage {
      * @throws IOException if the storage file cannot be read
      */
     public List<FoodPlace> load() throws IOException {
+        recoveredFile = null;
         if (!Files.exists(file)) {
             return new ArrayList<>();
         }
@@ -47,21 +54,22 @@ public class JsonPlaceStorage {
         if (content.isEmpty() || content.equals("[]")) {
             return new ArrayList<>();
         }
-        List<FoodPlace> places = new ArrayList<>();
-        for (String object : splitObjects(content)) {
-            Map<String, String> values = parseObject(object);
-            places.add(new FoodPlace(
-                    values.get("id"),
-                    values.getOrDefault("name", ""),
-                    values.getOrDefault("cuisine", ""),
-                    Double.parseDouble(values.getOrDefault("distanceKm", "0")),
-                    PriceRange.fromLabel(values.getOrDefault("priceRange", "$$")),
-                    Integer.parseInt(values.getOrDefault("rating", "3")),
-                    parseTags(values.getOrDefault("tags", "")),
-                    values.getOrDefault("notes", "")
-            ));
+        try {
+            return parsePlaces(content);
+        } catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
+            recoverMalformedFile();
+            return new ArrayList<>();
         }
-        return places;
+    }
+
+    /**
+     * Returns the backup created when malformed data was recovered during the
+     * most recent load.
+     *
+     * @return backup path, or empty when no recovery occurred
+     */
+    public Optional<Path> getRecoveredFile() {
+        return Optional.ofNullable(recoveredFile);
     }
 
     /**
@@ -93,6 +101,44 @@ public class JsonPlaceStorage {
         } catch (AtomicMoveNotSupportedException exception) {
             Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
         }
+    }
+
+    private List<FoodPlace> parsePlaces(String content) {
+        if (!content.startsWith("[") || !content.endsWith("]")) {
+            throw new IllegalArgumentException("Expected a JSON array.");
+        }
+        List<String> objects = splitObjects(content);
+        String body = content.substring(1, content.length() - 1).trim();
+        if (!body.isEmpty() && objects.isEmpty()) {
+            throw new IllegalArgumentException("Expected JSON objects.");
+        }
+        List<FoodPlace> places = new ArrayList<>();
+        for (String object : objects) {
+            Map<String, String> values = parseObject(object);
+            places.add(new FoodPlace(
+                    values.get("id"),
+                    values.getOrDefault("name", ""),
+                    values.getOrDefault("cuisine", ""),
+                    Double.parseDouble(values.getOrDefault("distanceKm", "0")),
+                    PriceRange.fromLabel(values.getOrDefault("priceRange", "$$")),
+                    Integer.parseInt(values.getOrDefault("rating", "3")),
+                    parseTags(values.getOrDefault("tags", "")),
+                    values.getOrDefault("notes", "")
+            ));
+        }
+        return places;
+    }
+
+    private void recoverMalformedFile() throws IOException {
+        String name = file.getFileName().toString();
+        int extension = name.lastIndexOf('.');
+        String stem = extension < 0 ? name : name.substring(0, extension);
+        String suffix = extension < 0 ? "" : name.substring(extension);
+        Path backup = file.resolveSibling(stem + "-corrupted-"
+                + BACKUP_TIMESTAMP.format(LocalDateTime.now()) + suffix);
+        Files.move(file, backup);
+        save(List.of());
+        recoveredFile = backup;
     }
 
     private String toJson(FoodPlace place) {
@@ -173,6 +219,9 @@ public class JsonPlaceStorage {
                 start = i + 1;
             }
         }
+        if (depth != 0 || inString) {
+            throw new IllegalArgumentException("Unterminated JSON value.");
+        }
         return objects;
     }
 
@@ -181,6 +230,9 @@ public class JsonPlaceStorage {
         Map<String, String> values = new LinkedHashMap<>();
         for (String pair : splitPairs(body)) {
             int colon = pair.indexOf(':');
+            if (colon < 0) {
+                throw new IllegalArgumentException("Expected a JSON field.");
+            }
             String key = stripQuotes(pair.substring(0, colon).trim());
             String rawValue = pair.substring(colon + 1).trim();
             values.put(key, stripQuotes(rawValue));

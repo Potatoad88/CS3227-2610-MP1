@@ -87,6 +87,22 @@ class JsonPlaceStorageTest {
         assertEquals(place.getId(), storage.load().get(0).getId());
     }
 
+    /** Verifies malformed data is preserved before storage resets to an empty list. */
+    @Test
+    void malformedFileIsBackedUpBeforeReset() throws IOException {
+        Path file = tempDir.resolve("places.json");
+        String malformed = "[{not valid JSON}]";
+        Files.writeString(file, malformed);
+        JsonPlaceStorage storage = new JsonPlaceStorage(file);
+
+        assertTrue(storage.load().isEmpty());
+
+        Path backup = storage.getRecoveredFile().orElseThrow();
+        assertEquals(malformed, Files.readString(backup));
+        assertTrue(storage.load().isEmpty());
+        assertTrue(storage.getRecoveredFile().isEmpty());
+    }
+
     private FoodPlace place(String name) {
         return new FoodPlace(name, "Other", 2, PriceRange.TWO, 4, List.of(), "");
     }

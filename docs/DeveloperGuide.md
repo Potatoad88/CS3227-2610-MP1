@@ -48,7 +48,7 @@ The UI depends on the logic layer, while logic depends on model and storage. Mod
 
 ### Storage
 
-`JsonPlaceStorage` persists saved places in `data/places.json` using Java NIO's `Path` and `Files` APIs. It creates the data directory when needed and returns an empty list when the file is missing, empty, or contains `[]`. Saves are written completely to a temporary file in the same directory before the original is replaced, reducing the risk of leaving partially written data. Atomic replacement is used when the file system supports it, with normal replacement as a portability fallback.
+`JsonPlaceStorage` persists saved places in `data/places.json` using Java NIO's `Path` and `Files` APIs. It creates the data directory when needed and returns an empty list when the file is missing, empty, or contains `[]`. If parsing fails, storage moves the malformed file to a timestamped `places-corrupted-*.json` sibling, writes a valid empty list, and exposes the backup path so startup can notify the user. Read or backup failures still propagate rather than risking data loss. Saves are written completely to a temporary file in the same directory before the original is replaced, reducing the risk of leaving partially written data. Atomic replacement is used when the file system supports it, with normal replacement as a portability fallback.
 
 The storage format is intentionally simple and local to this application. It supports the schema written by the app, but does not aim to be a general-purpose JSON parser.
 
@@ -69,7 +69,7 @@ Example record:
 
 ## Error Handling
 
-Form and filter validation errors are displayed in wrapping application dialogs. CRUD methods propagate `IOException` to the UI, where users receive an operation-specific error. An unreadable or malformed data file encountered during initial startup currently prevents launch; the User Guide documents how to recover the file.
+Form and filter validation errors are displayed in wrapping application dialogs. CRUD methods propagate `IOException` to the UI, where users receive an operation-specific error. Malformed saved data is backed up and reset during startup, after which a wrapping dialog reports the backup path. An unreadable file or a failed backup still prevents launch because the app cannot preserve the user's data safely.
 
 ## Build and Test Process
 
@@ -85,7 +85,7 @@ End users launch the matching JAR from `release/`; Gradle commands are maintaine
 
 Windows uses the equivalent commands with `gradlew.bat`. Checkstyle 14.0.0 checks main and test code for consistent imports, naming, braces, whitespace, line length, public API Javadocs, and common correctness issues. Its rules are stored in `config/checkstyle/checkstyle.xml`, and violations fail the Gradle `check` task. The four release tasks merge the application classes and the matching JavaFX modules into separate JARs for Windows x64, Linux x64, macOS x64, and macOS ARM64. `Launcher` does not extend `javafx.application.Application`, which allows `java -jar` to reach the bundled JavaFX runtime correctly. Tests use JUnit's `@TempDir`; they never touch production data.
 
-The 24 automated scenarios are grouped by responsibility:
+The 25 automated scenarios are grouped by responsibility:
 
 | Test file | Observable behavior covered |
 | --- | --- |
@@ -94,10 +94,10 @@ The 24 automated scenarios are grouped by responsibility:
 | `PriceRangeTest` | Verifies conversion of every display label and enum name, plus the documented fallback for unsupported labels. |
 | `FilterCriteriaTest` | Verifies inclusive maximum-distance filtering and that null, blank, and `Any` values leave filters inactive. |
 | `RandomPickerTest` | Verifies deterministic candidate selection through an injected random source and no selection from an empty list. |
-| `JsonPlaceStorageTest` | Verifies missing and whitespace-only files; round trips of every stored field and escaped character; replacement without leftover temporary files; and creation of missing parent directories. |
+| `JsonPlaceStorageTest` | Verifies missing and whitespace-only files; round trips of every stored field and escaped character; replacement without leftover temporary files; creation of missing parent directories; and preservation and reset of malformed data. |
 | `PlaceFormatterTest` | Verifies rating stars and distance formatting, including fractional values and values larger than a 32-bit integer. |
 
-JavaFX row navigation, event consumption, search and filter controls, dialogs, theme persistence, responsive scrolling, and appearance on each operating system remain manual-test concerns. Manual release checks also cover the minimum 720 x 480 window size, application restart, and launch of each matching platform JAR. Manually malformed JSON is unsupported; the User Guide explains how to reset the file if this prevents startup.
+JavaFX row navigation, event consumption, search and filter controls, dialogs, theme persistence, responsive scrolling, and appearance on each operating system remain manual-test concerns. Manual release checks also cover the minimum 720 x 480 window size, application restart, the malformed-data warning dialog, and launch of each matching platform JAR.
 
 ## Continuous Integration and Dependency Updates
 
