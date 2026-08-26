@@ -87,8 +87,12 @@ class HomeView {
         iconLabel.getStyleClass().add("mini-icon");
         Label titleLabel = new Label(title);
         titleLabel.getStyleClass().add("mini-title");
+        titleLabel.setWrapText(true);
+        titleLabel.setMaxWidth(Double.MAX_VALUE);
         Label bodyLabel = new Label(body);
         bodyLabel.getStyleClass().add("muted");
+        bodyLabel.setWrapText(true);
+        bodyLabel.setMaxWidth(Double.MAX_VALUE);
         card.getChildren().addAll(iconLabel, titleLabel, bodyLabel);
         return card;
     }

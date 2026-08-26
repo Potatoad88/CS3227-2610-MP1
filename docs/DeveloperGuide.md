@@ -48,7 +48,7 @@ The UI depends on the logic layer, while logic depends on model and storage. Mod
 
 ### Storage
 
-`JsonPlaceStorage` persists saved places in `data/places.json` using Java NIO's `Path` and `Files` APIs. It creates the data directory when needed and returns an empty list when the file is missing, empty, or contains `[]`.
+`JsonPlaceStorage` persists saved places in `data/places.json` using Java NIO's `Path` and `Files` APIs. It creates the data directory when needed and returns an empty list when the file is missing, empty, or contains `[]`. Saves are written completely to a temporary file in the same directory before the original is replaced, reducing the risk of leaving partially written data. Atomic replacement is used when the file system supports it, with normal replacement as a portability fallback.
 
 The storage format is intentionally simple and local to this application. It supports the schema written by the app, but does not aim to be a general-purpose JSON parser.
 
@@ -83,7 +83,7 @@ End users launch the matching JAR from `release/`; Gradle commands are maintaine
 ./gradlew releaseJars  # build all platform-specific executable JARs
 ```
 
-Windows uses the equivalent commands with `gradlew.bat`. Checkstyle 14.0.0 checks main and test code for consistent imports, naming, braces, whitespace, line length, public API Javadocs, and common correctness issues. Its rules are stored in `config/checkstyle/checkstyle.xml`, and violations fail the Gradle `check` task. The four release tasks merge the application classes and the matching JavaFX modules into separate JARs for Windows x64, Linux x64, Intel macOS, and Apple silicon macOS. `Launcher` does not extend `javafx.application.Application`, which allows `java -jar` to reach the bundled JavaFX runtime correctly. Tests use JUnit's `@TempDir`; they never touch production data.
+Windows uses the equivalent commands with `gradlew.bat`. Checkstyle 14.0.0 checks main and test code for consistent imports, naming, braces, whitespace, line length, public API Javadocs, and common correctness issues. Its rules are stored in `config/checkstyle/checkstyle.xml`, and violations fail the Gradle `check` task. The four release tasks merge the application classes and the matching JavaFX modules into separate JARs for Windows x64, Linux x64, macOS x64, and macOS ARM64. `Launcher` does not extend `javafx.application.Application`, which allows `java -jar` to reach the bundled JavaFX runtime correctly. Tests use JUnit's `@TempDir`; they never touch production data.
 
 The automated suite covers:
 
@@ -93,7 +93,7 @@ The automated suite covers:
 - name-only search combined with cuisine, price, and distance filtering;
 - random selection restricted to eligible places and no-match behavior;
 - consistent UI formatting for ratings and distances, including values larger than a 32-bit integer;
-- JSON round trips for every stored field, including escaped special characters.
+- JSON round trips for every stored field, escaped special characters, replacement of existing data, and temporary-file cleanup.
 
 JavaFX layout and theme appearance remain manual-test concerns. The release should be checked at the minimum 720 x 480 window size and after an application restart.
 

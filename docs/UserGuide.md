@@ -12,12 +12,26 @@ What Should I Eat? is an offline Java desktop app for maintaining a personal lis
 
 ## Setup and Launch
 
-1. Download the JAR matching the computer's operating system and processor:
+1. Download the JAR matching the operating system and active JDK architecture:
 
-- `WhatShouldIEat-windows-x64.jar` for 64-bit Windows
-- `WhatShouldIEat-linux-x64.jar` for 64-bit Linux
-- `WhatShouldIEat-macos-x64.jar` for Intel macOS
-- `WhatShouldIEat-macos-arm64.jar` for Apple silicon macOS
+- `WhatShouldIEat-windows-x64.jar` for 64-bit Windows with an x64 JDK
+- `WhatShouldIEat-linux-x64.jar` for 64-bit Linux with an x64 JDK
+- `WhatShouldIEat-macos-x64.jar` when the macOS JDK reports `x86_64`
+- `WhatShouldIEat-macos-arm64.jar` when the macOS JDK reports `aarch64`
+
+On macOS or Linux, check the active JDK architecture with:
+
+```bash
+java -XshowSettings:properties -version 2>&1 | grep os.arch
+```
+
+On Windows PowerShell, use:
+
+```powershell
+java -XshowSettings:properties -version 2>&1 | Select-String "os.arch"
+```
+
+An Apple silicon Mac can run either an ARM64 JDK natively or an x64 JDK through Rosetta. Select the JAR using the architecture reported by Java, even if it differs from the physical processor.
 
 2. Place the JAR in a dedicated folder and open a terminal in that folder.
 3. Launch it with Java 25. For example:
@@ -103,5 +117,5 @@ To reset the saved-place list, close the app and delete `data/places.json` or re
 - `'java' is not recognized` on Windows: install a supported 64-bit JDK, then reopen the terminal and run `java -version`.
 - Unsupported Java version: install JDK 25 and ensure `java -version` reports version 25.
 - `UnsupportedClassVersionError`: the selected `java` command is older than Java 25; update `JAVA_HOME` and the system path.
-- JavaFX native-library error from a release JAR: confirm that the JAR matches both the operating system and CPU architecture.
+- JavaFX native-library error from a release JAR: confirm that the JAR matches both the operating system and the architecture reported by the active JDK.
 - App fails after manual data edits: close the app and restore valid JSON, use `[]`, or delete `data/places.json` to start empty again.

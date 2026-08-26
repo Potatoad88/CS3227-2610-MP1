@@ -39,6 +39,8 @@ class PlaceDetailsView {
         card.getStyleClass().addAll("form-card", "details-card");
         Label heading = new Label(place.getName());
         heading.getStyleClass().add("form-heading");
+        heading.setWrapText(true);
+        heading.setMaxWidth(Double.MAX_VALUE);
         card.getChildren().addAll(
                 heading,
                 field("Cuisine Type", place.getCuisine()),

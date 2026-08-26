@@ -4,8 +4,10 @@ import com.whatshouldieat.model.FoodPlace;
 import com.whatshouldieat.model.PriceRange;
 
 import java.io.IOException;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -70,14 +72,27 @@ public class JsonPlaceStorage {
      * @throws IOException if the storage file cannot be created or written
      */
     public void save(List<FoodPlace> places) throws IOException {
-        Path parent = file.getParent();
-        if (parent != null) {
-            Files.createDirectories(parent);
-        }
+        Path target = file.toAbsolutePath();
+        Path parent = target.getParent();
+        Files.createDirectories(parent);
         String json = places.stream()
                 .map(this::toJson)
                 .collect(Collectors.joining(",\n", "[\n", "\n]\n"));
-        Files.writeString(file, json);
+        Path temporary = Files.createTempFile(parent, target.getFileName().toString(), ".tmp");
+        try {
+            Files.writeString(temporary, json);
+            replace(temporary, target);
+        } finally {
+            Files.deleteIfExists(temporary);
+        }
+    }
+
+    private void replace(Path source, Path target) throws IOException {
+        try {
+            Files.move(source, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+        } catch (AtomicMoveNotSupportedException exception) {
+            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 
     private String toJson(FoodPlace place) {

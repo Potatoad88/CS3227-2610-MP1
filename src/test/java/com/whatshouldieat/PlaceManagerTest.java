@@ -200,6 +200,20 @@ class PlaceManagerTest {
         assertEquals(original.getNotes(), loaded.getNotes());
     }
 
+    /** Verifies that saving replaces existing data without leaving temporary files. */
+    @Test
+    void saveReplacesExistingDataAndCleansUpTemporaryFile() throws IOException {
+        JsonPlaceStorage storage = new JsonPlaceStorage(dataFile);
+        FoodPlace replacement = place("Replacement", "Other", 2, PriceRange.TWO, 4);
+
+        storage.save(List.of(replacement));
+
+        assertEquals(List.of(replacement.getId()), storage.load().stream().map(FoodPlace::getId).toList());
+        try (var files = Files.list(tempDir)) {
+            assertEquals(List.of(dataFile), files.toList());
+        }
+    }
+
     private FoodPlace place(String name, String cuisine, double distance,
                             PriceRange priceRange, int rating) {
         return new FoodPlace(name, cuisine, distance, priceRange, rating, List.of(), "");

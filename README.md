@@ -31,7 +31,13 @@ A Java desktop app for saving food places and randomly choosing where to eat whe
 
 ## Download and Run
 
-Download the matching JAR from [`release/`](release), place it in a folder for the app, and run it with Java 25:
+Download the matching JAR from [`release/`](release) and place it in a folder for the app. On macOS or Linux, check the active JDK architecture with:
+
+```bash
+java -XshowSettings:properties -version 2>&1 | grep os.arch
+```
+
+Choose `macos-arm64` when Java reports `aarch64`, or `macos-x64` when it reports `x86_64`. Windows and Linux releases currently support x64 JDKs only. Then run:
 
 ```bash
 java -jar WhatShouldIEat-<platform>.jar

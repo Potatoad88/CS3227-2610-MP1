@@ -257,6 +257,8 @@ class SavedPlacesView {
         icon.getStyleClass().add("cuisine-icon");
         Label name = new Label(place.getName());
         name.getStyleClass().add("place-name");
+        name.setWrapText(true);
+        name.setMaxWidth(Double.MAX_VALUE);
         Label details = new Label(place.getCuisine() + "  ·  " + place.getPriceRange().getLabel() + "  ·  "
                 + PlaceFormatter.distance(place.getDistanceKm()) + " km  ·  "
                 + PlaceFormatter.stars(place.getRating()));
