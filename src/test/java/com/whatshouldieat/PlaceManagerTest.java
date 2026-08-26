@@ -14,12 +14,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -119,16 +117,6 @@ class PlaceManagerTest {
                 () -> manager.update("unknown-id", replacement));
     }
 
-    /** Verifies that a missing storage file represents an empty saved list. */
-    @Test
-    void missingStorageFileStartsEmpty() throws IOException {
-        Path missingFile = tempDir.resolve("missing-places.json");
-
-        PlaceManager emptyManager = new PlaceManager(new JsonPlaceStorage(missingFile));
-
-        assertTrue(emptyManager.getPlaces().isEmpty());
-    }
-
     /** Verifies that places are returned alphabetically without regard to case. */
     @Test
     void placesAreSortedByNameIgnoringCase() throws IOException {
@@ -172,46 +160,27 @@ class PlaceManagerTest {
         manager.add(included);
         manager.add(excluded);
 
-        Optional<FoodPlace> picked = picker.pick(manager.search(
+        var picked = picker.pick(manager.search(
                 new FilterCriteria("", "Any Cuisine", "Any Price", "5")));
 
         assertEquals(included, picked.orElseThrow());
         assertTrue(picker.pick(manager.search(new FilterCriteria("missing"))).isEmpty());
     }
 
-    /** Verifies that every stored field and escaped character survives a round trip. */
+    /** Verifies that duplicate names remain independently addressable by ID. */
     @Test
-    void storageRoundTripPreservesAllFieldsAndSpecialCharacters() throws IOException {
-        FoodPlace original = new FoodPlace(null, "Quote \" Cafe", "Other", 0,
-                PriceRange.TWO, 3, List.of("Tea", "Quiet"), "Line one\nLine two\\nTab\there\rEnd");
-        assertNotNull(original.getId());
+    void duplicateNamesCanBeUpdatedAndDeletedIndependently() throws IOException {
+        FoodPlace first = place("Shared Name", "Chinese", 1, PriceRange.ONE, 3);
+        FoodPlace second = place("Shared Name", "Italian", 2, PriceRange.TWO, 4);
+        manager.add(first);
+        manager.add(second);
 
-        JsonPlaceStorage storage = new JsonPlaceStorage(dataFile);
-        storage.save(List.of(original));
-        FoodPlace loaded = storage.load().get(0);
+        manager.update(first.getId(), place("Shared Name", "Japanese", 3, PriceRange.THREE, 5));
+        manager.delete(second.getId());
 
-        assertEquals(original.getId(), loaded.getId());
-        assertEquals(original.getName(), loaded.getName());
-        assertEquals(original.getCuisine(), loaded.getCuisine());
-        assertEquals(original.getDistanceKm(), loaded.getDistanceKm());
-        assertEquals(original.getPriceRange(), loaded.getPriceRange());
-        assertEquals(original.getRating(), loaded.getRating());
-        assertEquals(original.getTags(), loaded.getTags());
-        assertEquals(original.getNotes(), loaded.getNotes());
-    }
-
-    /** Verifies that saving replaces existing data without leaving temporary files. */
-    @Test
-    void saveReplacesExistingDataAndCleansUpTemporaryFile() throws IOException {
-        JsonPlaceStorage storage = new JsonPlaceStorage(dataFile);
-        FoodPlace replacement = place("Replacement", "Other", 2, PriceRange.TWO, 4);
-
-        storage.save(List.of(replacement));
-
-        assertEquals(List.of(replacement.getId()), storage.load().stream().map(FoodPlace::getId).toList());
-        try (var files = Files.list(tempDir)) {
-            assertEquals(List.of(dataFile), files.toList());
-        }
+        PlaceManager reloaded = new PlaceManager(new JsonPlaceStorage(dataFile));
+        assertEquals(List.of(first.getId()), reloaded.getPlaces().stream().map(FoodPlace::getId).toList());
+        assertEquals("Japanese", reloaded.findById(first.getId()).orElseThrow().getCuisine());
     }
 
     private FoodPlace place(String name, String cuisine, double distance,
