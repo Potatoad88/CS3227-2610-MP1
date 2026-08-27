@@ -67,6 +67,38 @@ Example record:
 }
 ```
 
+## Key Design Decisions
+
+- **Stable UUID identity:** Restaurant names are editable and need not be unique, so updates and deletions use generated UUIDs instead of names.
+- **Immutable place values:** Editing creates a replacement `FoodPlace` while preserving the existing UUID. This avoids partially updated objects and keeps failed operations from leaking changes.
+- **Save before changing memory:** `PlaceManager` builds an updated list and asks storage to save it before changing its managed list. If saving fails, the visible in-memory state remains unchanged.
+- **Safe file replacement:** Storage writes the complete JSON document to a sibling temporary file before replacing the active file. This reduces the chance of leaving partially written saved data.
+- **One eligible result set:** `SavedPlacesView` applies one `FilterCriteria` to produce both the displayed rows and the candidates passed to `RandomPicker`. A hidden place therefore cannot be selected.
+- **Platform-specific release JARs:** JavaFX contains operating-system and processor-specific native libraries. Separate JARs avoid native-resource collisions and make each supported target explicit.
+
+## Add-Place Execution Flow
+
+```text
+User presses Save Place
+        |
+        v
+PlaceFormView parses the fields and creates a FoodPlace
+        |
+        v
+PlaceManager validates the place and builds a copied list
+        |
+        v
+JsonPlaceStorage writes a temporary file and replaces places.json
+        |
+        v
+PlaceManager adds the place to its in-memory list
+        |
+        v
+AppView recreates SavedPlacesView with the latest sorted data
+```
+
+If parsing or validation fails, the form shows an error and does not call storage. If saving fails, the exception returns to the form and the manager does not change its in-memory list.
+
 ## Error Handling
 
 Form and filter validation errors are displayed in wrapping application dialogs. CRUD methods propagate `IOException` to the UI, where users receive an operation-specific error. Malformed saved data is backed up and reset during startup, after which a wrapping dialog reports the backup path. An unreadable file or a failed backup still prevents launch because the app cannot preserve the user's data safely.
