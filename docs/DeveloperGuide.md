@@ -87,15 +87,15 @@ Windows uses the equivalent commands with `gradlew.bat`. Checkstyle 14.0.0 check
 
 The 25 automated scenarios are grouped by responsibility:
 
-| Test file | Observable behavior covered |
-| --- | --- |
-| `PlaceManagerTest` | Verifies persistent CRUD and ID preservation; unchanged managed state after failed writes; invalid and boundary field values; rejection of unknown update IDs; case-insensitive sorting; name-only search combined with field filters; filtered random selection and no-match behavior; and independent update and deletion of places with duplicate names. |
-| `FoodPlaceTest` | Verifies generated and supplied IDs, identity independent of duplicate names, and defensive tag copies on input and output. |
-| `PriceRangeTest` | Verifies conversion of every display label and enum name, plus the documented fallback for unsupported labels. |
-| `FilterCriteriaTest` | Verifies inclusive maximum-distance filtering and that null, blank, and `Any` values leave filters inactive. |
-| `RandomPickerTest` | Verifies deterministic candidate selection through an injected random source and no selection from an empty list. |
-| `JsonPlaceStorageTest` | Verifies missing and whitespace-only files; round trips of every stored field and escaped character; replacement without leftover temporary files; creation of missing parent directories; and preservation and reset of malformed data. |
-| `PlaceFormatterTest` | Verifies rating stars and distance formatting, including fractional values and values larger than a 32-bit integer. |
+| Test file              | Observable behavior covered                                                                                                                                                                                                                                                                                                                                 |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PlaceManagerTest`     | Verifies persistent CRUD and ID preservation; unchanged managed state after failed writes; invalid and boundary field values; rejection of unknown update IDs; case-insensitive sorting; name-only search combined with field filters; filtered random selection and no-match behavior; and independent update and deletion of places with duplicate names. |
+| `FoodPlaceTest`        | Verifies generated and supplied IDs, identity independent of duplicate names, and defensive tag copies on input and output.                                                                                                                                                                                                                                 |
+| `PriceRangeTest`       | Verifies conversion of every display label and enum name, plus the documented fallback for unsupported labels.                                                                                                                                                                                                                                              |
+| `FilterCriteriaTest`   | Verifies inclusive maximum-distance filtering and that null, blank, and `Any` values leave filters inactive.                                                                                                                                                                                                                                                |
+| `RandomPickerTest`     | Verifies deterministic candidate selection through an injected random source and no selection from an empty list.                                                                                                                                                                                                                                           |
+| `JsonPlaceStorageTest` | Verifies missing and whitespace-only files; round trips of every stored field and escaped character; replacement without leftover temporary files; creation of missing parent directories; and preservation and reset of malformed data.                                                                                                                    |
+| `PlaceFormatterTest`   | Verifies rating stars and distance formatting, including fractional values and values larger than a 32-bit integer.                                                                                                                                                                                                                                         |
 
 JavaFX row navigation, event consumption, search and filter controls, dialogs, theme persistence, responsive scrolling, and appearance on each operating system remain manual-test concerns. Manual release checks also cover the minimum 720 x 480 window size, application restart, the malformed-data warning dialog, and launch of each matching platform JAR.
 
@@ -113,13 +113,19 @@ Development was iterative and risk-driven. The first scope review deferred Googl
 
 AI output was treated as a draft rather than accepted blindly. Changes were checked through compilation, automated tests, manual launches, and screenshot comparison. Reported regressions, such as a null ID during update and low dark-mode contrast, were traced to shared model or CSS behavior before correction.
 
-## Future Extension: Maps
+## Future Extensions
+
+### Maps
 
 A future release may introduce a location service only when Maps is implemented. That service should translate an address into coordinates and calculate distance from user-defined presets such as Home or Work. API keys must remain outside source control, and manual distance should remain available when the network or API is unavailable.
 
+### User Accounts and Cloud Storage
+
+A future release may add user registration and login so each user can access the same saved places across devices. The JavaFX client should communicate with an authenticated backend API, which would enforce ownership and store places in a database. The client should not connect directly to a remote database or contain database credentials. Introducing this feature would also require secure password handling, session management, migration from local JSON, network-error handling, and a decision on whether local data remains available offline.
+
 ## Acknowledgements
 
-- The visual direction was adapted from three prototype screenshots supplied by the project author. No image assets or source code were copied from them.
+- The visual direction was adapted from three prototype screenshots supplied by myself. No image assets or source code were copied from them.
 - Product planning, implementation drafts, reviews, debugging, Javadocs, tests, and documentation were developed with OpenAI ChatGPT and Codex. All generated output was reviewed and adapted for this project.
 - Code-simplification reviews used Dietrich Gebert's Ponytail Codex plugin. Its guidance influenced removal of unused favourite-related behaviour, unnecessary mutation, and duplicated filtering responsibility; no Ponytail source code is included in the app.
 - The project uses [OpenJFX](https://openjfx.io/) for its desktop UI, [Gradle](https://gradle.org/) for builds, and [JUnit](https://junit.org/) for automated tests.
